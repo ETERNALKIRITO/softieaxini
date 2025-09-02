@@ -48,7 +48,6 @@ export const audioLibraryData = {
         { title: "New Jersey Remix", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/new-jersey-remix.mp3?updatedAt=1749230623857" },
         { title: "Don't Stop", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/dont-stop.mp3?updatedAt=1751490971390" },
         { title: "Beast Fantasy", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/Beast%20Fantasy.mp3" },
-        { title: "Wake Up!", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/wake-up.mp3?updatedAt=1752836409260" },
         { title: "Neon Blade", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/neon-blade.mp3" },
         { title: "Muder In My Mind", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/muder-in-mind.mp3" },
     ],
