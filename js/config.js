@@ -115,6 +115,7 @@ export const audioLibraryData = {
         { title: "Love Nwantiti", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/love-nwantiti.mp3" },
         { title: "Into Your Arms", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/into-your-arms-tonight.mp3" },
         { title: "Lover Girl", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/love-girl.mp3?updatedAt=1755995696450" },
+        { title: "Shake It To The Max", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/shake-it-to-the-max.mp3?updatedAt=1756845623914" },
     ]
 };
 
