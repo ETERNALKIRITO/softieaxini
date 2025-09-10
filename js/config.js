@@ -116,8 +116,8 @@ export const audioLibraryData = {
         { title: "Into Your Arms", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/into-your-arms-tonight.mp3" },
         { title: "Lover Girl", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/love-girl.mp3?updatedAt=1755995696450" },
         { title: "Shake It To The Max", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/shake-it-to-the-max.mp3?updatedAt=1756845623914" },
-        { title: "Legends Never Die", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/after-dark.mp3?updatedAt=1757466796402" },
-        { title: "Immortals", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Immortals.mp3?updatedAt=1757468302113" },
+        { title: "After Dark", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/after-dark.mp3?updatedAt=1757466796402" },
+        { title: "Legends Never Die", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/legends-never-die.mp3?updatedAt=1757468287593" },
         { title: "AURORA", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Aurora.mp3?updatedAt=1757468324192" },
     ]
 };
