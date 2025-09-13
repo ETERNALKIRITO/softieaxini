@@ -118,7 +118,8 @@ export const audioLibraryData = {
         { title: "Shake It To The Max", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/shake-it-to-the-max.mp3?updatedAt=1756845623914" },
         { title: "After Dark", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/after-dark.mp3?updatedAt=1757466796402" },
         { title: "Legends Never Die", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/legends-never-die.mp3?updatedAt=1757468287593" },
-        { title: "AURORA", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Aurora.mp3?updatedAt=1757468324192" },
+        { title: "Thick Of It", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/thick-of-it.mp3" },
+        
     ]
 };
 
