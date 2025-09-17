@@ -119,6 +119,9 @@ export const audioLibraryData = {
         { title: "After Dark", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/after-dark.mp3?updatedAt=1757466796402" },
         { title: "Legends Never Die", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/legends-never-die.mp3?updatedAt=1757468287593" },
         { title: "Thick Of It", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/thick-of-it.mp3" },
+        { title: "EEYUH! x Fluxxwave (Slowed + Reverb)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/EEYUH!%20x%20Fluxxwave%20(Slowed%20+%20Reverb).mp3" },
+        { title: "I'll do it x Metamorphosis", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/I'll%20do%20it%20x%20Metamorphosis.mp3" },
+        { title: "MONTAGEM XONADA", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/MONTAGEM%20XONADA.mp3" },
         
     ]
 };
