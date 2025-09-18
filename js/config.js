@@ -50,6 +50,7 @@ export const audioLibraryData = {
         { title: "Beast Fantasy", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/Beast%20Fantasy.mp3" },
         { title: "Neon Blade", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/neon-blade.mp3" },
         { title: "Muder In My Mind", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/muder-in-mind.mp3" },
+        { title: "MONTAGEM XONADA", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/MONTAGEM%20XONADA.mp3" },
     ],
     "Songs": [
         { title: "Skyfall", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/skyfall.mp3?updatedAt=1747151760064" },
@@ -119,9 +120,6 @@ export const audioLibraryData = {
         { title: "After Dark", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/after-dark.mp3?updatedAt=1757466796402" },
         { title: "Legends Never Die", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/legends-never-die.mp3?updatedAt=1757468287593" },
         { title: "Thick Of It", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/thick-of-it.mp3" },
-        { title: "EEYUH! x Fluxxwave (Slowed + Reverb)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/EEYUH!%20x%20Fluxxwave%20(Slowed%20+%20Reverb).mp3" },
-        { title: "I'll do it x Metamorphosis", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/I'll%20do%20it%20x%20Metamorphosis.mp3" },
-        { title: "MONTAGEM XONADA", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/MONTAGEM%20XONADA.mp3" },
         
     ]
 };
