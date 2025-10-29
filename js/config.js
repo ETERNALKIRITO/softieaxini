@@ -16,16 +16,13 @@ export const audioLibraryData = {
         { title: "An Enigmatic Encounter", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/audioboard-last-breath-sans.mp3?updatedAt=1747151546548" },
         { title: "Reality Perception", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/reality-perception.mp3?updatedAt=1747151554023" },
         { title: "Time Paradox Sans", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/audioboard-time-paradox-sans.mp3?updatedAt=1747151558008" },
-        { title: "Candyland", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/audioboard-candyland.mp3?updatedAt=1747151561469" },
         { title: "Rage No 2 Reaper", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/rage-no-2-reaper.mp3?updatedAt=1747151725614" },
-        { title: "Joyful Chess (Super Slowed)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/joyful-chess-super-slowed.mp3?updatedAt=1747234121592" },
         { title: "Killstreak 500", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/killstreak-500.mp3?updatedAt=1747151573823" },
         { title: "Sunday In Bed", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/sunday-in-bed.mp3?updatedAt=1747151577328" },
         { title: "Crab Rave", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/audioboard-crab-rave.mp3?updatedAt=1747151581197" },
         { title: "Dr Livesey Phonk", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/dr-livsey-phonk.mp3?updatedAt=1747151585081" },
         { title: "Lovely Bastard", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/lovely-bastard.mp3?updatedAt=1747151588672" },
         { title: "Dezire Burnout", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/dezire-burnout.mp3?updatedAt=1747151591982" },
-        { title: "Blue Horizon (Ultra Slowed)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/blue-horizion-ultra-slowed.mp3?updatedAt=1747151596123" },
         { title: "Vyrval - ❀H (Second Drop + Super Slowed)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/vyrval%20-%20%E2%9C%BBH+(second%20drop%20+%20super%20slowed).mp3?updatedAt=1747157020792" },
         { title: "Passo Bem Sloto", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/passo-bem-sloto.mp3?updatedAt=1747151614296" },
         { title: "Undertale OST 080", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/audioboard-undertale-OST-080.mp3?updatedAt=1747151610974" },
@@ -33,9 +30,10 @@ export const audioLibraryData = {
         { title: "JPN Amend", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/jpn-amend.mp3?updatedAt=1747151603012" },
         { title: "Cute Depressed", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/cute-depressed.mp3?updatedAt=1747151618812" },
         { title: "Blue Horizon (Slowed)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/blue-horizion-slowed.mp3?updatedAt=1747151633639" },
-        { title: "Montagem", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/montagem.mp3?updatedAt=1747151630278" },
+        { title: "Blue Horizon (Ultra Slowed)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/blue-horizion-ultra-slowed.mp3?updatedAt=1747151596123" },
         { title: "Nursery Phonk", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/nursery-phonk.mp3?updatedAt=1747151626695" },
         { title: "Joyful Chess (Slowed)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/joyful-chess-slowed.mp3?updatedAt=1747234161752" },
+        { title: "Joyful Chess (Super Slowed)", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/joyful-chess-super-slowed.mp3?updatedAt=1747234121592" },
         { title: "Return To Slime", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/return-to-slime.mp3?updatedAt=1747151355606" },
         { title: "Harvest", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/harvest.mp3?updatedAt=1747400849909" },
         { title: "Doom Eternal", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/doom-eternal.mp3?updatedAt=1748347174996" },
@@ -50,7 +48,13 @@ export const audioLibraryData = {
         { title: "Beast Fantasy", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/Beast%20Fantasy.mp3" },
         { title: "Neon Blade", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/neon-blade.mp3" },
         { title: "Muder In My Mind", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/muder-in-mind.mp3" },
+        { title: "Montagem", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/montagem.mp3?updatedAt=1747151630278" },
         { title: "MONTAGEM XONADA", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/MONTAGEM%20XONADA.mp3" },
+        { title: "Confess Your Love", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/Confess%20Your%20Love.mp3" },
+        { title: "Leat'eq Tokyo", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/Leat'eq%20Tokyo.mp3" },
+        { title: "The Honored One", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/The%20Honored%20One.mp3" },
+        
+
     ],
     "Songs": [
         { title: "Skyfall", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/skyfall.mp3?updatedAt=1747151760064" },
@@ -120,6 +124,12 @@ export const audioLibraryData = {
         { title: "After Dark", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/after-dark.mp3?updatedAt=1757466796402" },
         { title: "Legends Never Die", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/legends-never-die.mp3?updatedAt=1757468287593" },
         { title: "Thick Of It", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/thick-of-it.mp3" },
+        { title: "Laung Mai Laachi", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/LaungMaiLaachi.mp3" },
+        { title: "Saki Saki", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Saki-Saki.mp3" },
+        { title: "Surmedani", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Surmedani.mp3" },
+        { title: "Bala", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Bala.mp3" },
+        { title: "Tum Say Koi Pyaara", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/TumSaKoiPyaara.mp3" },
+
         
     ]
 };
