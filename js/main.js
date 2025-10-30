@@ -9,7 +9,30 @@ import { saveState, loadState } from './persistence.js';
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
 
+     // --- VCONSOLE SECRET GESTURE SETUP ---
     const vConsole = new VConsole();
+    vConsole.hideSwitch(); // Hide the button immediately on load
+
+    let tapCount = 0;
+    let tapTimeout = null;
+    const headerTitle = document.querySelector('header h1');
+
+    // Listen for clicks on the main title
+    headerTitle.addEventListener('click', () => {
+        tapCount++;
+        clearTimeout(tapTimeout); // Reset the timer on each tap
+
+        if (tapCount >= 5) { // If 5 taps are registered
+            vConsole.showSwitch(); // Show the button
+            tapCount = 0; // Reset for next time
+        } else {
+            // Set a timer to reset the count if the user stops tapping
+            tapTimeout = setTimeout(() => {
+                tapCount = 0;
+            }, 500); // 500ms window between taps
+        }
+    });
+    // --- END OF VCONSOLE SETUP ---
 
     initializeFlatAudioList();
     renderLibrary();
