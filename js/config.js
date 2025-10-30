@@ -134,4 +134,4 @@ export const audioLibraryData = {
     ]
 };
 
-export const themes = ["default", "theme-blue", "theme-green", "theme-peach"];
+export const themes = ["default", "theme-blue", "theme-green", "theme-peach", "theme-dark"];

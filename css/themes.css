@@ -52,6 +52,18 @@ body.theme-peach {
     --progress-bar-thumb: #5c4a3c;
 }
 
+body.theme-dark {
+    --primary-bg: #121212;
+    --secondary-bg: #1e1e1e;
+    --accent-color: #00bcd4;
+    --text-color: #e0e0e0;
+    --highlight-color: #00e5ff;
+    --button-bg: #2a2a2a;
+    --button-hover-bg: #383838;
+    --progress-bar-bg: #00bcd4;
+    --progress-bar-thumb: #e0e0e0;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 600px) {
     .app-container {
