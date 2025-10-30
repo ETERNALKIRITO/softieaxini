@@ -69,7 +69,9 @@ body.theme-dark {
     .app-container {
         padding: 10px;
         margin: 5px;
+        width: calc(100% - 10px); /* Add this line to fix the overflow */
     }
+
     header h1 {
         font-size: 1.5em;
     }

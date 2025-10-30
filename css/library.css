@@ -36,7 +36,9 @@
     max-height: 50vh;
     overflow-y: auto;
     padding-right: 10px;
+    box-sizing: border-box; /* <-- ADD THIS LINE: This is the key fix. */
 }
+
 
 .category {
     margin-bottom: 20px;
@@ -58,7 +60,9 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     border-radius: 4px;
+    overflow: hidden; /* This is a good safeguard */
 }
+
 
 .track-item:hover {
     background-color: var(--primary-bg);
@@ -76,6 +80,10 @@
 
 .track-title {
     font-weight: bold;
+    /* --- THESE 3 LINES ARE ALSO ESSENTIAL --- */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .track-artist {
