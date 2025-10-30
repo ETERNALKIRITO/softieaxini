@@ -8,6 +8,9 @@ import { saveState, loadState } from './persistence.js';
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+
+    const vConsole = new VConsole();
+
     initializeFlatAudioList();
     renderLibrary();
     loadState();
