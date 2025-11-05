@@ -14,6 +14,12 @@ export const dom = {
     npTitle: document.getElementById('npTitle'),
     npArtist: document.getElementById('npArtist'),
     cacheAllBtn: document.getElementById('cacheAllBtn'),
+
+    menuToggleBtn: document.getElementById('menuToggleBtn'),
+    sidebar: document.getElementById('sidebar'),
+    overlay: document.getElementById('overlay'),
+    toggleConsoleBtn: document.getElementById('toggleConsoleBtn'),
+    
     backgroundPlayToggle: document.getElementById('backgroundPlayToggle'),
     themeSwitcherBtn: document.getElementById('themeSwitcherBtn'),
     nowPlayingBar: document.getElementById('nowPlayingBar'),

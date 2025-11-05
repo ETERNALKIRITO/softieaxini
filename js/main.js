@@ -2,48 +2,61 @@
 
 import { dom } from './dom.js';
 import { state, initializeFlatAudioList } from './state.js';
-import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary } from './ui.js';
+import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary, updateTrackCacheStatus } from './ui.js';
 import { togglePlayPause, playNext, playPrev, restartAudio, seek, pauseAudio, setVolume } from './player.js';
 import { saveState, loadState } from './persistence.js';
 
+let vConsole;
+let isVConsoleVisible = false;
+
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-
-     // --- VCONSOLE SECRET GESTURE SETUP ---
-    const vConsole = new VConsole();
-    vConsole.hideSwitch(); // Hide the button immediately on load
-
-    let tapCount = 0;
-    let tapTimeout = null;
-    const headerTitle = document.querySelector('header h1');
-
-    // Listen for clicks on the main title
-    headerTitle.addEventListener('click', () => {
-        tapCount++;
-        clearTimeout(tapTimeout); // Reset the timer on each tap
-
-        if (tapCount >= 5) { // If 5 taps are registered
-            vConsole.showSwitch(); // Show the button
-            tapCount = 0; // Reset for next time
-        } else {
-            // Set a timer to reset the count if the user stops tapping
-            tapTimeout = setTimeout(() => {
-                tapCount = 0;
-            }, 500); // 500ms window between taps
-        }
-    });
-    // --- END OF VCONSOLE SETUP ---
+    vConsole = new VConsole();
+    vConsole.hideSwitch();
 
     initializeFlatAudioList();
-    renderLibrary();
+    renderLibrary().then(() => {
+        checkInitialCacheStatus();
+    });
+    
     loadState();
     updatePlayPauseButtons();
     setupEventListeners();
     registerServiceWorker();
 });
 
-// --- EVENT LISTENERS SETUP ---
+// --- Check cache on startup ---
+async function checkInitialCacheStatus() {
+    if (!('caches' in window)) return;
+    const cache = await caches.open('softieaxin-audio-v1');
+    for (let i = 0; i < state.flatAudioList.length; i++) {
+        const track = state.flatAudioList[i];
+        const response = await cache.match(track.url);
+        if (response) {
+            updateTrackCacheStatus(i, 'cached');
+        }
+    }
+}
+
+function toggleSidebar() {
+    dom.sidebar.classList.toggle('open');
+    dom.overlay.classList.toggle('open');
+}
+
 function setupEventListeners() {
+    // Sidebar Controls
+    dom.menuToggleBtn.addEventListener('click', toggleSidebar);
+    dom.overlay.addEventListener('click', toggleSidebar);
+    dom.toggleConsoleBtn.addEventListener('click', () => {
+        if (isVConsoleVisible) {
+            vConsole.hideSwitch();
+        } else {
+            vConsole.showSwitch();
+        }
+        isVConsoleVisible = !isVConsoleVisible;
+        toggleSidebar();
+    });
+
     // Player Controls
     dom.playPauseBtn.addEventListener('click', togglePlayPause);
     dom.nextBtn.addEventListener('click', playNext);
@@ -61,7 +74,7 @@ function setupEventListeners() {
     dom.audioPlayer.addEventListener('loadedmetadata', handleMetadataLoaded);
     dom.audioPlayer.addEventListener('ended', playNext);
 
-    // App Controls
+    // App Controls (from sidebar)
     dom.themeSwitcherBtn.addEventListener('click', cycleTheme);
     dom.backgroundPlayToggle.addEventListener('change', handleBackgroundToggle);
     dom.cacheAllBtn.addEventListener('click', handleCacheAll);
@@ -101,7 +114,7 @@ function handleMetadataLoaded() {
     dom.progressBar.max = duration;
     dom.bsProgressBar.max = duration;
     dom.totalTimeDisplay.textContent = formatTime(duration);
-    bsTotalTime.textContent = formatTime(duration);
+    dom.bsTotalTime.textContent = formatTime(duration);
 }
 
 function handleBackgroundToggle(e) {
@@ -137,22 +150,29 @@ async function handleCacheAll() {
         type: 'CACHE_AUDIO_FILES',
         urls: audioUrlsToCache
     });
-
-    navigator.serviceWorker.addEventListener('message', function onCacheMessage(event) {
-        if (event.data.type === 'AUDIO_CACHING_COMPLETE') {
-            alert(`Caching complete! Success: ${event.data.successCount}, Failed: ${event.data.failCount}.`);
-            dom.cacheAllBtn.innerHTML = '<i class="fas fa-database"></i> Cache All';
-            dom.cacheAllBtn.disabled = false;
-            navigator.serviceWorker.removeEventListener('message', onCacheMessage);
-        }
-    });
 }
 
 // --- SERVICE WORKER REGISTRATION ---
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
-            .then(reg => console.log('Service Worker registered.', reg))
+            .then(reg => {
+                console.log('Service Worker registered.', reg);
+                // Setup the global message listener for SW communication
+                navigator.serviceWorker.addEventListener('message', event => {
+                    if (event.data.type === 'AUDIO_CACHING_PROGRESS') {
+                        const { url, status } = event.data;
+                        const trackIndex = state.flatAudioList.findIndex(track => track.url === url);
+                        if (trackIndex > -1) {
+                            updateTrackCacheStatus(trackIndex, status);
+                        }
+                    } else if (event.data.type === 'AUDIO_CACHING_COMPLETE') {
+                        alert('Caching process complete!');
+                        dom.cacheAllBtn.innerHTML = '<i class="fas fa-database"></i> Cache All';
+                        dom.cacheAllBtn.disabled = false;
+                    }
+                });
+            })
             .catch(err => console.error('Service Worker registration failed.', err));
     }
 }

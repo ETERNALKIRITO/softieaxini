@@ -64,6 +64,31 @@ body.theme-dark {
     --progress-bar-thumb: #e0e0e0;
 }
 
+body.theme-emerald {
+    --primary-bg: #0D2B2C;      /* Deep, dark teal */
+    --secondary-bg: #1A4D4A;    /* Dark slate green */
+    --accent-color: #30D5C8;     /* Bright turquoise/emerald */
+    --text-color: #E0F2F1;      /* Off-white, slightly cyan */
+    --highlight-color: #33FFDD; /* Neon mint for the playing track */
+    --button-bg: #1A4D4A;
+    --button-hover-bg: #256F6B;
+    --progress-bar-bg: #30D5C8;
+    --progress-bar-thumb: #E0F2F1;
+}
+
+body.theme-silver {
+    --primary-bg: #F5F7FA;      /* Very light cool gray */
+    --secondary-bg: #FFFFFF;    /* Pure white */
+    --accent-color: #AAB8C2;     /* Muted silver-gray */
+    --text-color: #2F3E46;      /* Dark charcoal for high contrast */
+    --highlight-color: #007BFF; /* A vibrant blue for a modern tech feel */
+    --button-bg: #FFFFFF;
+    --button-hover-bg: #F5F7FA;
+    --progress-bar-bg: #AAB8C2;
+    --progress-bar-thumb: #007BFF;
+    --box-shadow: 0 4px 12px rgba(47, 62, 70, 0.15); /* A softer, more defined shadow */
+}   
+
 /* Responsive Adjustments */
 @media (max-width: 600px) {
     .app-container {

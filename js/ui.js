@@ -3,7 +3,7 @@
 import { dom } from './dom.js';
 import { state } from './state.js';
 import { audioLibraryData, themes } from './config.js';
-import { loadTrack, pauseAudio } from './player.js'; // Import pauseAudio
+import { loadTrack, pauseAudio } from './player.js';
 
 export function filterLibrary() {
     const searchTerm = dom.searchInput.value.toLowerCase().trim();
@@ -17,7 +17,6 @@ export function filterLibrary() {
             const title = item.querySelector('.track-title').textContent.toLowerCase();
             const isMatch = title.includes(searchTerm);
 
-            // Show or hide the track item based on match
             item.style.display = isMatch ? 'flex' : 'none';
 
             if (isMatch) {
@@ -25,49 +24,87 @@ export function filterLibrary() {
             }
         });
 
-        // If a category has no visible tracks, hide the category itself
         category.style.display = visibleTracksInCategory > 0 ? 'block' : 'none';
     });
 }
 
-
 export function renderLibrary() {
-    dom.audioLibraryContainer.innerHTML = '';
-    let globalTrackRenderIndex = 0;
+    return new Promise(resolve => { // Return a promise to know when it's done
+        dom.audioLibraryContainer.innerHTML = '';
+        let globalTrackRenderIndex = 0;
 
-    for (const categoryName in audioLibraryData) {
-        if (audioLibraryData.hasOwnProperty(categoryName)) {
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'category';
-            const categoryTitle = document.createElement('h2');
-            categoryTitle.textContent = categoryName;
-            categoryDiv.appendChild(categoryTitle);
+        for (const categoryName in audioLibraryData) {
+            if (audioLibraryData.hasOwnProperty(categoryName)) {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                const categoryTitle = document.createElement('h2');
+                categoryTitle.textContent = categoryName;
+                categoryDiv.appendChild(categoryTitle);
 
-            audioLibraryData[categoryName].forEach(trackInCategory => {
-                const trackItem = document.createElement('div');
-                trackItem.className = 'track-item';
-                trackItem.dataset.index = globalTrackRenderIndex;
+                audioLibraryData[categoryName].forEach(trackInCategory => {
+                    const trackItem = document.createElement('div');
+                    trackItem.className = 'track-item';
+                    trackItem.dataset.index = globalTrackRenderIndex;
 
-                const titleSpan = document.createElement('span');
-                titleSpan.className = 'track-title';
-                titleSpan.textContent = trackInCategory.title;
+                    // Create a container for the title/artist
+                    const infoContainer = document.createElement('div');
+                    infoContainer.className = 'track-info-container';
+                    
+                    const titleSpan = document.createElement('span');
+                    titleSpan.className = 'track-title';
+                    titleSpan.textContent = trackInCategory.title;
+                    infoContainer.appendChild(titleSpan);
 
-                trackItem.appendChild(titleSpan);
+                    // Create the cache status element
+                    const cacheStatusSpan = document.createElement('span');
+                    cacheStatusSpan.className = 'cache-status';
+                    
+                    trackItem.appendChild(infoContainer); // Add the text container
+                    trackItem.appendChild(cacheStatusSpan); // Add the status icon
 
-                // --- THE FIX IS HERE ---
-                // Create a new, block-scoped constant for each iteration of the loop.
-                // The event listener's closure will capture this specific, unchanging value.
-                const indexForListener = globalTrackRenderIndex;
-                trackItem.addEventListener('click', () => loadTrack(indexForListener));
-                // --- END OF FIX ---
+                    const indexForListener = globalTrackRenderIndex;
+                    trackItem.addEventListener('click', () => loadTrack(indexForListener));
 
-                categoryDiv.appendChild(trackItem);
-                globalTrackRenderIndex++;
-            });
-            dom.audioLibraryContainer.appendChild(categoryDiv);
+                    categoryDiv.appendChild(trackItem);
+                    globalTrackRenderIndex++;
+                });
+                dom.audioLibraryContainer.appendChild(categoryDiv);
+            }
+        }
+        updatePlayingIndicator();
+        resolve(); // Resolve the promise
+    });
+}
+
+// NEW FUNCTION to update the icon based on status
+export function updateTrackCacheStatus(trackIndex, status) {
+    const trackItem = dom.audioLibraryContainer.querySelector(`.track-item[data-index='${trackIndex}']`);
+    if (trackItem) {
+        const statusIconEl = trackItem.querySelector('.cache-status');
+        if (statusIconEl) {
+            let iconHtml = '';
+            let title = '';
+            switch (status) {
+                case 'caching':
+                    iconHtml = '<i class="fas fa-spinner fa-spin"></i>';
+                    title = 'Caching...';
+                    break;
+                case 'cached':
+                    iconHtml = '<i class="fas fa-check-circle"></i>';
+                    title = 'Available Offline';
+                    break;
+                case 'failed':
+                    iconHtml = '<i class="fas fa-times-circle"></i>';
+                    title = 'Caching Failed';
+                    break;
+                default:
+                    iconHtml = ''; // No icon for 'not-cached'
+                    title = 'Online Only';
+            }
+            statusIconEl.innerHTML = iconHtml;
+            statusIconEl.title = title;
         }
     }
-    updatePlayingIndicator();
 }
 
 export function updatePlayPauseButtons() {

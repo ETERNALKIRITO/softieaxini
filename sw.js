@@ -113,51 +113,51 @@ self.addEventListener('fetch', event => {
     }
 });
 
-// --- MESSAGE: Handle bulk audio caching requests from the main application ---
 self.addEventListener('message', event => {
     if (event.data && event.data.type === 'CACHE_AUDIO_FILES') {
-        console.log('[SW] Received message to cache audio files:', event.data.urls.length, "urls");
         const urlsToCache = event.data.urls;
-        let successCount = 0;
-        let failCount = 0;
 
         event.waitUntil((async () => {
             const cache = await caches.open(AUDIO_CACHE_NAME);
+            const clients = await self.clients.matchAll();
 
-            // Process URLs sequentially to be kind to the network and avoid errors.
+            // Helper function to post messages to all clients
+            const postProgress = (message) => {
+                clients.forEach(client => client.postMessage(message));
+            };
+
             for (const url of urlsToCache) {
-                const request = new Request(url, { mode: 'cors', credentials: 'omit' });
                 try {
-                    // Check if already cached to save bandwidth.
+                    const request = new Request(url, { mode: 'cors', credentials: 'omit' });
                     const cachedResponse = await cache.match(request);
+
                     if (cachedResponse) {
-                        successCount++;
-                        continue; // Already exists, so skip to the next one.
+                        // Already cached, just notify the client
+                        postProgress({ type: 'AUDIO_CACHING_PROGRESS', url, status: 'cached' });
+                        continue;
                     }
+
+                    // Not cached, so let's start the process
+                    postProgress({ type: 'AUDIO_CACHING_PROGRESS', url, status: 'caching' });
 
                     const response = await fetch(request);
                     if (!response.ok) {
-                        throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+                        throw new Error(`Fetch failed: ${response.status}`);
                     }
                     await cache.put(request, response.clone());
-                    successCount++;
+                    
+                    // Success!
+                    postProgress({ type: 'AUDIO_CACHING_PROGRESS', url, status: 'cached' });
+
                 } catch (error) {
-                    failCount++;
                     console.error(`[SW] Failed to cache ${url}:`, error.message);
+                    postProgress({ type: 'AUDIO_CACHING_PROGRESS', url, status: 'failed' });
                 }
             }
 
-            console.log(`[SW] Audio caching process complete. Success: ${successCount}, Failed: ${failCount}`);
-            // Send a completion message back to all client pages.
-            self.clients.matchAll().then(clients => {
-                clients.forEach(client => {
-                    client.postMessage({
-                        type: 'AUDIO_CACHING_COMPLETE',
-                        successCount: successCount,
-                        failCount: failCount
-                    });
-                });
-            });
+            // Send a final completion message
+            postProgress({ type: 'AUDIO_CACHING_COMPLETE' });
+
         })());
     }
 });

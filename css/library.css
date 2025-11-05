@@ -92,3 +92,29 @@
     opacity: 0.8;
     margin-left: 10px;
 }
+
+.track-info-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allows title to take up space and truncate */
+    overflow: hidden; /* Essential for text-overflow */
+    margin-right: 10px; /* Space between text and icon */
+}
+
+.cache-status {
+    font-size: 1.2em; /* Make icon a bit bigger */
+    min-width: 25px; /* Reserve space to prevent layout shift */
+    text-align: center;
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+.cache-status .fa-check-circle {
+    color: #28a745; /* A nice green color */
+    opacity: 0.8;
+}
+
+.cache-status .fa-times-circle {
+    color: #dc3545; /* A red color for failure */
+    opacity: 0.8;
+}
