@@ -52,17 +52,19 @@ body.theme-peach {
     --progress-bar-thumb: #5c4a3c;
 }
 
-body.theme-dark {
-    --primary-bg: #121212;
-    --secondary-bg: #1e1e1e;
-    --accent-color: #00bcd4;
-    --text-color: #e0e0e0;
-    --highlight-color: #00e5ff;
-    --button-bg: #2a2a2a;
-    --button-hover-bg: #383838;
-    --progress-bar-bg: #00bcd4;
-    --progress-bar-thumb: #e0e0e0;
+body.theme-midnight {
+    --primary-bg: #0D1117;       /* Deep, dark navy blue (almost black) */
+    --secondary-bg: #161B22;     /* Slightly lighter charcoal for the main container */
+    --accent-color: #8A4DFF;      /* A vibrant, rich purple */
+    --text-color: #C9D1D9;       /* Soft, light gray for readability */
+    --highlight-color: #A678FF;  /* A slightly brighter purple for the playing track */
+    --button-bg: #21262D;        /* A distinct, dark gray for buttons */
+    --button-hover-bg: #2A3038;   /* A subtle hover effect */
+    --progress-bar-bg: #8A4DFF;   /* Use the accent color for the progress bar */
+    --progress-bar-thumb: #C9D1D9;/* The thumb uses the text color for contrast */
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* A deeper shadow for a dark environment */
 }
+
 
 body.theme-emerald {
     --primary-bg: #0D2B2C;      /* Deep, dark teal */

@@ -130,9 +130,12 @@ export const audioLibraryData = {
         { title: "Surmedani", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Surmedani.mp3" },
         { title: "Bala", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Bala.mp3" },
         { title: "Tum Say Koi Pyaara", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/TumSaKoiPyaara.mp3" },
+        { title: "Tauba Tauba", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/tauba-tauba.mp3" },
+        { title: "Lele Joh Pathaan", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/lele-joh-pathaan.mp3" },
+        { title: "Take A Slice", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/take-a-slice.mp3" },
 
         
     ]
 };
 
-export const themes = ["default", "theme-blue", "theme-green", "theme-peach", "theme-dark", "theme-emerald", "theme-silver"];
+export const themes = ["default", "theme-blue", "theme-green", "theme-peach", "theme-midnight", "theme-emerald", "theme-silver"];
