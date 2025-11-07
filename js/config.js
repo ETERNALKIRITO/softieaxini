@@ -133,6 +133,7 @@ export const audioLibraryData = {
         { title: "Tauba Tauba", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/tauba-tauba.mp3" },
         { title: "Lele Joh Pathaan", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/lele-joh-pathaan.mp3" },
         { title: "Take A Slice", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/take-a-slice.mp3" },
+        { title: "Aaaj Ki Raat", url: "https://ik.imagekit.io/ut3w2pq43i/SONG/Aaj-Ki-Raat.mp3" },
 
         
     ]
