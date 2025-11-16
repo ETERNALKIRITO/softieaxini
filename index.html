@@ -4,18 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- START: PWA and iOS Home Screen Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8A4DFF">
+    
+    <!-- Apple-specific tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Audio Player">
+    <!-- END: PWA and iOS Home Screen Configuration -->
+
     <title>SoftieAxin Audio Player</title>
     <link rel="icon" type="image/png" href="https://ik.imagekit.io/9llyyueko/STATIC%20IMAGES/blank.png?updatedAt=1745897165289">
     
-    <!-- This link stays the same -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- This link stays the same -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- ADD THIS SCRIPT FOR VCONSOLE -->
     <script src="https://unpkg.com/vconsole/dist/vconsole.min.js"></script>
-
 </head>
 <body>
     <!-- START: NEW OVERLAY AND SIDEBAR ELEMENTS -->
