@@ -1,3 +1,4 @@
+// START: main.js
 // js/main.js: The main entry point for the application.
 
 import { dom } from './dom.js';
@@ -57,6 +58,9 @@ function setupEventListeners() {
         toggleSidebar();
     });
 
+    // --- NEW: Fullscreen Listener ---
+    dom.fullscreenBtn.addEventListener('click', toggleFullscreen);
+
     // Player Controls
     dom.playPauseBtn.addEventListener('click', togglePlayPause);
     dom.nextBtn.addEventListener('click', playNext);
@@ -97,6 +101,35 @@ function setupEventListeners() {
             pauseAudio();
         }
     });
+
+    // --- NEW: Listen for fullscreen changes (e.g., user presses ESC) ---
+    document.addEventListener('fullscreenchange', updateFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+    document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+    document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+}
+
+// --- FULLSCREEN LOGIC ---
+function toggleFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const el = document.documentElement;
+        if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen(); // Safari
+    } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); // Safari
+    }
+}
+
+function updateFullscreenButton() {
+    const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (isFullscreen) {
+        dom.fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
+        dom.fullscreenBtn.title = 'Exit Fullscreen';
+    } else {
+        dom.fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Toggle Fullscreen';
+        dom.fullscreenBtn.title = 'Toggle Fullscreen';
+    }
 }
 
 // --- EVENT HANDLER FUNCTIONS ---
@@ -176,3 +209,4 @@ function registerServiceWorker() {
             .catch(err => console.error('Service Worker registration failed.', err));
     }
 }
+// END: main.js

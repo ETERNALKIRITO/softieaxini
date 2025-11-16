@@ -1,3 +1,4 @@
+// START: dom.js
 // js/dom.js: Selects and exports all necessary DOM elements.
 
 export const dom = {
@@ -24,6 +25,9 @@ export const dom = {
     themeSwitcherBtn: document.getElementById('themeSwitcherBtn'),
     nowPlayingBar: document.getElementById('nowPlayingBar'),
     searchInput: document.getElementById('searchInput'),
+
+    // --- NEW ELEMENT ---
+    fullscreenBtn: document.getElementById('fullscreenBtn'),
 
     // Black Screen Mode Elements
     blackScreenMode: document.getElementById('blackScreenMode'),
