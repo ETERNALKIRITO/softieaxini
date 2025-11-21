@@ -54,6 +54,7 @@ export const audioLibraryData = {
         { title: "Leat'eq Tokyo", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/Leat'eq%20Tokyo.mp3" },
         { title: "The Honored One", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/The%20Honored%20One.mp3" },
         { title: "Belong To Me Funk", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/belong-to-me-funk.mp3" },
+        { title: "Akatsuki Theme Song", url: "https://ik.imagekit.io/ut3w2pq43i/AUDIO/akatsuki-theme-song.mp3" },
         
 
     ],
