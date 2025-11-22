@@ -28,6 +28,18 @@ export const dom = {
 
     // --- NEW ELEMENT ---
     fullscreenBtn: document.getElementById('fullscreenBtn'),
+    zoomToggle: document.getElementById('zoomToggle'),
+    viewportMeta: document.getElementById('viewportMeta'),
+
+    // Shuffle Dropdown Elements
+    shuffleDropdownBtn: document.getElementById('shuffleDropdownBtn'),
+    shuffleDropdownContent: document.getElementById('shuffleDropdownContent'),
+    shuffleDropdownContainer: document.querySelector('.dropdown-container'),
+    
+    shuffleSongsBtn: document.getElementById('shuffleSongsBtn'),
+    shuffleAudiosBtn: document.getElementById('shuffleAudiosBtn'),
+    shuffleAllBtn: document.getElementById('shuffleAllBtn'),
+    resetLibraryBtn: document.getElementById('resetLibraryBtn'), // Good to have a reset
 
     // Black Screen Mode Elements
     blackScreenMode: document.getElementById('blackScreenMode'),

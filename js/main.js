@@ -3,8 +3,9 @@
 
 import { dom } from './dom.js';
 import { state, initializeFlatAudioList } from './state.js';
-import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary, updateTrackCacheStatus } from './ui.js';
-import { togglePlayPause, playNext, playPrev, restartAudio, seek, pauseAudio, setVolume } from './player.js';
+import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary, updateTrackCacheStatus, applyZoomState, shuffleArray } from './ui.js';
+// --- FIX: Imported loadTrack from player.js ---
+import { togglePlayPause, playNext, playPrev, restartAudio, seek, pauseAudio, setVolume, loadTrack } from './player.js'; 
 import { saveState, loadState } from './persistence.js';
 
 let vConsole;
@@ -58,10 +59,73 @@ function setupEventListeners() {
         toggleSidebar();
     });
 
-    // --- NEW: Fullscreen Listener ---
+    // Fullscreen Listener
     dom.fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-    // Player Controls
+    // Zoom Toggle Listener
+    dom.zoomToggle.addEventListener('change', (e) => {
+        state.isZoomAllowed = e.target.checked;
+        applyZoomState();
+        saveState(); 
+    });
+
+    // --- SHUFFLE DROPDOWN LOGIC ---
+    // Toggle the dropdown menu
+    dom.shuffleDropdownBtn.addEventListener('click', () => {
+        dom.shuffleDropdownContainer.classList.toggle('active');
+    });
+
+    // The Logic Function
+    const handleShuffle = (filterType) => {
+        // 1. Reset list to original state first to get all tracks
+        initializeFlatAudioList(); 
+        let listToShuffle = [...state.flatAudioList];
+
+        // 2. Filter based on button clicked
+        if (filterType === 'songs') {
+            listToShuffle = listToShuffle.filter(t => t.category === 'Songs');
+        } else if (filterType === 'audios') {
+            listToShuffle = listToShuffle.filter(t => t.category === 'Audios');
+        }
+        // 'all' passes through without filtering
+
+        // 3. Shuffle the result
+        const shuffledList = shuffleArray(listToShuffle);
+
+        // 4. Update Global State
+        state.flatAudioList = shuffledList; 
+        state.currentTrackIndex = 0; 
+
+        // 5. Update UI Title
+        let title = filterType === 'songs' ? "Shuffled Songs" : 
+                    filterType === 'audios' ? "Shuffled Audios" : "All Tracks (Randomized)";
+        
+        // 6. Render the shuffled list
+        renderLibrary(shuffledList, title);
+        
+        // 7. Start Playing the first track of the new list
+        loadTrack(0);
+        
+        // 8. Cleanup
+        dom.shuffleDropdownContainer.classList.remove('active');
+        toggleSidebar();
+    };
+
+    // Attach listeners to the specific shuffle buttons
+    dom.shuffleSongsBtn.addEventListener('click', () => handleShuffle('songs'));
+    dom.shuffleAudiosBtn.addEventListener('click', () => handleShuffle('audios'));
+    dom.shuffleAllBtn.addEventListener('click', () => handleShuffle('all'));
+
+    // Reset Button Logic
+    dom.resetLibraryBtn.addEventListener('click', () => {
+        initializeFlatAudioList(); // Reset state to default config order
+        renderLibrary(); // Render default categorized view
+        dom.shuffleDropdownContainer.classList.remove('active');
+        toggleSidebar();
+    });
+
+
+    // --- STANDARD PLAYER CONTROLS ---
     dom.playPauseBtn.addEventListener('click', togglePlayPause);
     dom.nextBtn.addEventListener('click', playNext);
     dom.prevBtn.addEventListener('click', playPrev);
@@ -95,14 +159,14 @@ function setupEventListeners() {
     });
     dom.blackScreenMode.addEventListener('click', handleBlackScreenClick);
     
-    // Background Play toggle
+    // Background Play toggle listener
     document.addEventListener('visibilitychange', () => {
         if (document.hidden && !state.backgroundPlayEnabled && state.isPlaying) {
             pauseAudio();
         }
     });
 
-    // --- NEW: Listen for fullscreen changes (e.g., user presses ESC) ---
+    // Listen for fullscreen changes
     document.addEventListener('fullscreenchange', updateFullscreenButton);
     document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
     document.addEventListener('mozfullscreenchange', updateFullscreenButton);
@@ -178,7 +242,10 @@ async function handleCacheAll() {
     dom.cacheAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Caching...';
     dom.cacheAllBtn.disabled = true;
 
+    // Use state.flatAudioList but ensure we get the source URLs from config if needed,
+    // though state.flatAudioList should be populated.
     const audioUrlsToCache = state.flatAudioList.map(track => track.url);
+    
     navigator.serviceWorker.controller.postMessage({
         type: 'CACHE_AUDIO_FILES',
         urls: audioUrlsToCache
@@ -191,7 +258,6 @@ function registerServiceWorker() {
         navigator.serviceWorker.register('sw.js')
             .then(reg => {
                 console.log('Service Worker registered.', reg);
-                // Setup the global message listener for SW communication
                 navigator.serviceWorker.addEventListener('message', event => {
                     if (event.data.type === 'AUDIO_CACHING_PROGRESS') {
                         const { url, status } = event.data;
@@ -209,4 +275,3 @@ function registerServiceWorker() {
             .catch(err => console.error('Service Worker registration failed.', err));
     }
 }
-// END: main.js

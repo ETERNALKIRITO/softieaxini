@@ -17,6 +17,7 @@ export const state = {
     gainNode: null,
     audioSource: null,
     isAudioContextInitialized: false,
+    isZoomAllowed: true,
 };
 
 // Creates a single, flat array of all tracks from the categorized data

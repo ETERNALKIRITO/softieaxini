@@ -3,15 +3,19 @@
 import { dom } from './dom.js';
 import { state } from './state.js';
 import { themes } from './config.js';
-import { applyTheme, formatTime } from './ui.js';
+// --- FIX: Added applyZoomState to the import list below ---
+import { applyTheme, formatTime, applyZoomState } from './ui.js';
 import { loadTrack, setVolume } from './player.js';
 
 export function saveState() {
+    // Save Zoom Preference (Save this regardless of whether a track is playing)
+    localStorage.setItem('softieAxinZoom', state.isZoomAllowed);
+
     if (state.currentTrackIndex === -1) return;
+    
     const appState = {
         currentTrackIndex: state.currentTrackIndex,
         currentTime: dom.audioPlayer.currentTime,
-        // --- MODIFIED: Ensure we're saving the correct volume value ---
         volume: dom.volumeBar.value
     };
     localStorage.setItem('softieAxinState', JSON.stringify(appState));
@@ -34,6 +38,17 @@ export function loadState() {
         dom.backgroundPlayToggle.checked = state.backgroundPlayEnabled;
     }
 
+    // Load Zoom Preference
+    const savedZoom = localStorage.getItem('softieAxinZoom');
+    if (savedZoom !== null) {
+        state.isZoomAllowed = JSON.parse(savedZoom);
+    } else {
+        state.isZoomAllowed = true; 
+    }
+    
+    // Apply the loaded setting (This will now work because it is imported)
+    applyZoomState(); 
+
     // Load Player State
     const savedState = localStorage.getItem('softieAxinState');
     if (savedState) {
@@ -45,25 +60,21 @@ export function loadState() {
                 if (loaded.currentTime) {
                     const setTimeOnMetadata = () => {
                         dom.audioPlayer.currentTime = loaded.currentTime;
-                        // Update UI elements that depend on duration
                         dom.totalTimeDisplay.textContent = formatTime(dom.audioPlayer.duration);
                         dom.bsTotalTime.textContent = formatTime(dom.audioPlayer.duration);
-                        // Update UI elements for current time
                         dom.currentTimeDisplay.textContent = formatTime(loaded.currentTime);
                         dom.bsCurrentTime.textContent = formatTime(loaded.currentTime);
                         dom.progressBar.value = loaded.currentTime;
                         dom.bsProgressBar.value = loaded.currentTime;
                     };
 
-                    if (dom.audioPlayer.readyState >= 1) { // If metadata is already loaded
+                    if (dom.audioPlayer.readyState >= 1) { 
                         setTimeOnMetadata();
-                    } else { // Otherwise, wait for it to load
+                    } else { 
                         dom.audioPlayer.addEventListener('loadedmetadata', setTimeOnMetadata, { once: true });
                     }
                 }
                if (loaded.volume !== undefined) {
-                // Set the UI and state first. The GainNode will be updated
-                // once the audio context is initialized on the first play.
                 dom.volumeBar.value = loaded.volume;
                 dom.audioPlayer.volume = loaded.volume;
             }
@@ -74,7 +85,6 @@ export function loadState() {
             localStorage.removeItem('softieAxinState');
         }
     } else {
-        // Default volume for a fresh session
         dom.audioPlayer.volume = dom.volumeBar.value;
     }
 }

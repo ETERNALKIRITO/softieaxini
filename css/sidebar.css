@@ -3,7 +3,7 @@
 .header-content {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Align items to the start */
+    justify-content: flex-start;
     width: 100%;
 }
 
@@ -14,7 +14,7 @@
     font-size: 1.5em;
     cursor: pointer;
     padding: 5px 10px;
-    z-index: 2001; /* Above the overlay and sidebar */
+    z-index: 2001; /* Above overlay */
 }
 
 #menuToggleBtn:hover {
@@ -37,6 +37,7 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+    overflow-y: auto; /* Scroll if content is tall */
 }
 
 .sidebar.open {
@@ -51,54 +52,115 @@
     padding-bottom: 10px;
 }
 
-/* Style the controls inside the sidebar */
 .sidebar-controls {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-/* --- THIS IS THE KEY FIX --- */
-/* Target ALL direct children of the controls container */
-.sidebar-controls > * {
-    display: flex; /* Use flexbox for alignment */
+/* --- SHARED BUTTON STYLES --- */
+/* We apply this to:
+   1. Direct buttons (Cache, Theme)
+   2. The Toggle Switch Label
+   3. The Dropdown Toggle Button
+   4. The Buttons inside the Dropdown
+*/
+.sidebar-controls > button,
+.sidebar-controls > .toggle-switch,
+.dropdown-toggle,
+.dropdown-content button {
+    display: flex;
     align-items: center;
     width: 100%;
     box-sizing: border-box;
     text-align: left;
     padding: 12px 15px;
-    background-color: var(--primary-bg); /* Give them a consistent background */
+    background-color: var(--primary-bg);
     border: 1px solid var(--accent-color);
     border-radius: var(--border-radius);
     font-size: 0.9em;
     color: var(--text-color);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
 }
 
-/* Specific adjustments for buttons */
-.sidebar-controls button {
-    gap: 10px; /* Space between icon and text */
-}
-
-/* Specific adjustments for the toggle switch label */
-.sidebar-controls .toggle-switch {
-    justify-content: space-between; /* Pushes the switch to the right */
-}
-
-/* Hover effect for all items */
-.sidebar-controls > *:hover {
+/* Hover effects for all above */
+.sidebar-controls > button:hover,
+.sidebar-controls > .toggle-switch:hover,
+.dropdown-toggle:hover,
+.dropdown-content button:hover {
     background-color: var(--button-hover-bg);
 }
 
-.sidebar-controls button, .sidebar-controls .toggle-switch {
-    width: 100%;
-    box-sizing: border-box;
-    text-align: left; /* Align text to the left for a menu feel */
-    justify-content: flex-start; /* For the toggle switch */
-    padding: 12px 15px;
+/* Icon spacing for all buttons */
+.sidebar-controls button i,
+.dropdown-toggle i,
+.dropdown-content button i {
+    width: 25px;
+    text-align: center;
+    margin-right: 10px;
 }
 
+/* --- SPECIFIC ADJUSTMENTS --- */
+
+/* 1. Toggle Switch: Needs space between text and slider */
+.sidebar-controls .toggle-switch {
+    justify-content: space-between;
+}
+
+/* 2. Dropdown Container: MUST BE TRANSPARENT (This fixes the broken look) */
+.dropdown-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 3. Dropdown Toggle: Push arrow to the right */
+.dropdown-toggle {
+    justify-content: space-between;
+}
+
+.dropdown-toggle .arrow-icon {
+    width: auto;
+    margin-right: 0;
+    transition: transform 0.3s ease;
+}
+
+/* Rotate arrow when active */
+.dropdown-container.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* 4. Dropdown Content (The list that slides down) */
+.dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-left: 10px; /* Indent the sub-buttons */
+}
+
+.dropdown-container.active .dropdown-content {
+    max-height: 300px;
+    opacity: 1;
+}
+
+/* 5. Dropdown Sub-buttons specific style */
+.dropdown-content button {
+    border-left: 4px solid var(--accent-color); /* Thicker left border */
+    background-color: var(--secondary-bg); /* Slightly different bg */
+}
+
+/* --- OVERLAY --- */
 .overlay {
     position: fixed;
     top: 0;
