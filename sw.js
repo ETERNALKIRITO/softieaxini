@@ -1,18 +1,19 @@
 // sw.js (Final Corrected Version)
 
-const APP_CACHE_NAME = 'softieaxin-app-v10'; // <-- IMPORTANT: Increment the version!
+const APP_CACHE_NAME = 'softieaxin-app-v12'; // Increment Version!
 const AUDIO_CACHE_NAME = 'softieaxin-audio-v1';
 
-// All the essential files needed for the application shell to work offline.
 const APP_SHELL_URLS = [
     '/',
     'index.html',
+    'library.json', // Ensure this is here from the previous step
     'style.css',
     'css/themes.css',
     'css/base.css',
     'css/components.css',
     'css/library.css',
     'css/player.css',
+    'css/sidebar.css', // Don't forget this one if you haven't added it!
     'js/main.js',
     'js/config.js',
     'js/dom.js',
@@ -20,7 +21,8 @@ const APP_SHELL_URLS = [
     'js/ui.js',
     'js/player.js',
     'js/persistence.js',
-    // External Assets
+    // --- EXTERNAL ASSETS (Must be exact matches) ---
+    'https://unpkg.com/vconsole/dist/vconsole.min.js', // <--- ADD THIS LINE
     'https://ik.imagekit.io/9llyyueko/STATIC%20IMAGES/blank.png?updatedAt=1745897165289',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2'

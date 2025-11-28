@@ -2,7 +2,7 @@
 
 import { dom } from './dom.js';
 import { state } from './state.js';
-import { audioLibraryData, themes } from './config.js';
+import { themes } from './config.js'; // audioLibraryData removed from import
 // --- FIX: Removed updatePlayingIndicator from this import ---
 import { loadTrack, pauseAudio } from './player.js';
 
@@ -102,15 +102,15 @@ export function renderLibrary(customList = null, customTitle = null) {
         // Default Behavior (Categorized)
         else {
             let globalTrackRenderIndex = 0;
-            for (const categoryName in audioLibraryData) {
-                if (audioLibraryData.hasOwnProperty(categoryName)) {
+            for (const categoryName in state.audioLibrary) {
+                if (state.audioLibrary.hasOwnProperty(categoryName)) {
                     const categoryDiv = document.createElement('div');
                     categoryDiv.className = 'category';
                     const categoryTitle = document.createElement('h2');
                     categoryTitle.textContent = categoryName;
                     categoryDiv.appendChild(categoryTitle);
 
-                    audioLibraryData[categoryName].forEach(track => {
+                    state.audioLibrary[categoryName].forEach(track => {
                         const trackItem = createTrackElement(track, globalTrackRenderIndex);
                         categoryDiv.appendChild(trackItem);
                         globalTrackRenderIndex++;

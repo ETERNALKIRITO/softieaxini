@@ -1,10 +1,8 @@
-// START: main.js
-// js/main.js: The main entry point for the application.
+// js/main.js
 
 import { dom } from './dom.js';
-import { state, initializeFlatAudioList } from './state.js';
+import { state, loadLibraryData, initializeFlatAudioList } from './state.js'; // Added loadLibraryData
 import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary, updateTrackCacheStatus, applyZoomState, shuffleArray } from './ui.js';
-// --- FIX: Imported loadTrack from player.js ---
 import { togglePlayPause, playNext, playPrev, restartAudio, seek, pauseAudio, setVolume, loadTrack } from './player.js'; 
 import { saveState, loadState } from './persistence.js';
 
@@ -12,11 +10,21 @@ let vConsole;
 let isVConsoleVisible = false;
 
 // --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', () => {
-    vConsole = new VConsole();
-    vConsole.hideSwitch();
+document.addEventListener('DOMContentLoaded', async () => {
+    
+    // --- SAFETY CHECK FOR VCONSOLE ---
+    // This prevents the app from crashing if the script fails to load offline
+    if (typeof VConsole !== 'undefined') {
+        vConsole = new VConsole();
+        vConsole.hideSwitch();
+    } else {
+        console.warn('VConsole script not loaded. Debug console unavailable.');
+    }
 
-    initializeFlatAudioList();
+    // Load the JSON Library
+    await loadLibraryData();
+
+    // Render Library
     renderLibrary().then(() => {
         checkInitialCacheStatus();
     });
@@ -49,7 +57,14 @@ function setupEventListeners() {
     // Sidebar Controls
     dom.menuToggleBtn.addEventListener('click', toggleSidebar);
     dom.overlay.addEventListener('click', toggleSidebar);
+  // Update the Toggle Console Listener
     dom.toggleConsoleBtn.addEventListener('click', () => {
+        // Safety check
+        if (typeof vConsole === 'undefined') {
+            alert("Debug Console is not available (script failed to load).");
+            return;
+        }
+
         if (isVConsoleVisible) {
             vConsole.hideSwitch();
         } else {
@@ -67,6 +82,14 @@ function setupEventListeners() {
         state.isZoomAllowed = e.target.checked;
         applyZoomState();
         saveState(); 
+    });
+
+    dom.reloadAppBtn.addEventListener('click', () => {
+        // Optional: Change text to show something is happening
+        dom.reloadAppBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reloading...';
+        
+        // Reload the page
+        window.location.reload();
     });
 
     // --- SHUFFLE DROPDOWN LOGIC ---

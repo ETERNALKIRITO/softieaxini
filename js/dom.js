@@ -29,6 +29,7 @@ export const dom = {
     // --- NEW ELEMENT ---
     fullscreenBtn: document.getElementById('fullscreenBtn'),
     zoomToggle: document.getElementById('zoomToggle'),
+    reloadAppBtn: document.getElementById('reloadAppBtn'),
     viewportMeta: document.getElementById('viewportMeta'),
 
     // Shuffle Dropdown Elements
