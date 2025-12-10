@@ -1,9 +1,8 @@
-// js/ui.js: Contains all functions that update the user interface.
+// js/ui.js (Corrected for Ghost Audio)
 
 import { dom } from './dom.js';
 import { state } from './state.js';
-import { themes } from './config.js'; // audioLibraryData removed from import
-// --- FIX: Removed updatePlayingIndicator from this import ---
+import { themes } from './config.js'; 
 import { loadTrack, pauseAudio } from './player.js';
 
 export function applyZoomState() {
@@ -17,7 +16,6 @@ export function applyZoomState() {
     dom.zoomToggle.checked = state.isZoomAllowed;
 }
 
-// Helper: Fisher-Yates Shuffle Algorithm
 export function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -28,7 +26,6 @@ export function shuffleArray(array) {
 
 export function filterLibrary() {
     const searchTerm = dom.searchInput.value.toLowerCase().trim();
-    // If we are in "Shuffle Mode" (single category), filtering is simpler
     if (dom.audioLibraryContainer.querySelector('.category h2').textContent.includes('Shuffled') || 
         dom.audioLibraryContainer.querySelector('.category h2').textContent.includes('All Tracks')) {
         
@@ -40,7 +37,6 @@ export function filterLibrary() {
         return;
     }
 
-    // Default Categorized Filtering
     const categories = dom.audioLibraryContainer.querySelectorAll('.category');
     categories.forEach(category => {
         const trackItems = category.querySelectorAll('.track-item');
@@ -57,7 +53,6 @@ export function filterLibrary() {
     });
 }
 
-// Helper to create the HTML for a track (prevents code duplication)
 function createTrackElement(track, index) {
     const trackItem = document.createElement('div');
     trackItem.className = 'track-item';
@@ -85,7 +80,6 @@ export function renderLibrary(customList = null, customTitle = null) {
     return new Promise(resolve => {
         dom.audioLibraryContainer.innerHTML = '';
         
-        // If we have a custom (shuffled) list
         if (customList) {
             const categoryDiv = document.createElement('div');
             categoryDiv.className = 'category';
@@ -99,7 +93,6 @@ export function renderLibrary(customList = null, customTitle = null) {
             });
             dom.audioLibraryContainer.appendChild(categoryDiv);
         } 
-        // Default Behavior (Categorized)
         else {
             let globalTrackRenderIndex = 0;
             for (const categoryName in state.audioLibrary) {
@@ -174,6 +167,7 @@ export function updatePlayingIndicator() {
 }
 
 export function formatTime(seconds) {
+    if (!seconds || isNaN(seconds)) return "0:00";
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
@@ -192,12 +186,18 @@ export function cycleTheme() {
     applyTheme(themes[state.currentThemeIndex]);
 }
 
+// --- FIX: UPDATED BLACK SCREEN FUNCTION ---
 export function showBlackScreenMode() {
     if (state.currentTrackIndex === -1) return;
     dom.blackScreenMode.style.display = 'flex';
-    dom.bsProgressBar.value = dom.audioPlayer.currentTime;
-    dom.bsCurrentTime.textContent = formatTime(dom.audioPlayer.currentTime);
-    dom.bsTotalTime.textContent = formatTime(dom.audioPlayer.duration || 0);
+    
+    // Use state.activeAudio instead of dom.audioPlayer
+    const currentTime = state.activeAudio ? state.activeAudio.currentTime : state.pendingCurrentTime;
+    const duration = state.activeAudio ? state.activeAudio.duration : 0;
+
+    dom.bsProgressBar.value = currentTime;
+    dom.bsCurrentTime.textContent = formatTime(currentTime);
+    dom.bsTotalTime.textContent = formatTime(duration);
     updatePlayPauseButtons();
 }
 
@@ -214,6 +214,7 @@ export function toggleLockScreen() {
     dom.blackScreenMode.classList.toggle('locked', state.isBlackScreenLocked);
 }
 
+// --- NEW FUNCTION TO HANDLE PROGRESS UPDATES ---
 export function updateProgressUI(currentTime, duration) {
     // Update main bar
     dom.progressBar.value = currentTime;
