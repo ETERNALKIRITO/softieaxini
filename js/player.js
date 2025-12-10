@@ -1,76 +1,75 @@
-// js/player.js (Corrected for iOS Background Play)
+// js/player.js (Final iOS Fix)
 
 import { dom } from './dom.js';
 import { state } from './state.js';
 import { updatePlayPauseButtons, updatePlayingIndicator, showBlackScreenMode } from './ui.js';
 import { saveState } from './persistence.js';
 
-// --- Web Audio API Section - We will bypass this for iOS compatibility ---
-/*
-function initializeAudioContext() {
-    if (state.isAudioContextInitialized) return;
-
-    // Create the master AudioContext
-    state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Create a GainNode for volume control
-    state.gainNode = state.audioContext.createGain();
-
-    // Connect the <audio> element as the source
-    state.audioSource = state.audioContext.createMediaElementSource(dom.audioPlayer);
-
-    // Create the audio graph: source -> gain -> speakers (destination)
-    state.audioSource.connect(state.gainNode);
-    state.gainNode.connect(state.audioContext.destination);
-
-    // Set the initial volume from the slider
-    state.gainNode.gain.value = dom.volumeBar.value;
-
-    state.isAudioContextInitialized = true;
-    console.log("Web Audio API Initialized.");
-}
-*/
-
-// --- MODIFIED: Function to set volume using the native <audio> element property ---
 export function setVolume(volume) {
-    // This now directly controls the audio element, which is compatible with background play.
     dom.audioPlayer.volume = volume;
     dom.volumeBar.value = volume;
-    saveState(); // Save volume change immediately
+    saveState();
 }
 
-
-export function loadTrack(index, playImmediately = true) {
+/**
+ * Loads a track.
+ * @param {number} index - The index of the track in flatAudioList
+ * @param {boolean} playImmediately - Whether to start playing automatically
+ * @param {boolean} lazyLoad - IF TRUE: Updates text/UI only. Does NOT load the audio file.
+ */
+export function loadTrack(index, playImmediately = true, lazyLoad = false) {
     if (index >= 0 && index < state.flatAudioList.length) {
         state.currentTrackIndex = index;
         const track = state.flatAudioList[index];
-        dom.audioPlayer.src = track.url;
-        dom.audioPlayer.load();
 
+        // 1. ALWAYS update the Visual UI immediately
         dom.npTitle.textContent = track.title;
-        dom.npArtist.textContent = "";
+        dom.npArtist.textContent = ""; // Add artist here if your JSON has it
         dom.bsTrackTitle.textContent = track.title;
-
-        if (playImmediately) {
-            playAudio();
-        } else {
-            updatePlayPauseButtons();
-        }
         updatePlayingIndicator();
+
+        // 2. Logic for Audio Element
+        if (lazyLoad) {
+            // --- LAZY MODE (On App Startup) ---
+            // We do NOT set dom.audioPlayer.src here.
+            // We just set the state to paused and update icons.
+            state.isPlaying = false;
+            updatePlayPauseButtons();
+        } else {
+            // --- ACTIVE MODE (User Clicked) ---
+            // Only reload src if it's different (prevents stutter if clicking same track)
+            // We check 'includes' because currentSrc is a full absolute URL
+            if (!dom.audioPlayer.src || !dom.audioPlayer.src.includes(track.url)) {
+                dom.audioPlayer.src = track.url;
+                dom.audioPlayer.load();
+            }
+
+            if (playImmediately) {
+                playAudio();
+            } else {
+                updatePlayPauseButtons();
+            }
+        }
+        
+        // Save state (unless it's the startup load, but saving here is harmless)
         saveState();
     }
 }
 
 export function playAudio() {
-    // --- MODIFIED: Removed AudioContext resume logic ---
-    /*
-    if (state.audioContext && state.audioContext.state === 'suspended') {
-        state.audioContext.resume();
+    // Safety check: If src is empty (from a lazy load), we can't play yet.
+    if (!dom.audioPlayer.src) {
+        console.warn("Attempted to play with no source. Loading current track...");
+        if(state.currentTrackIndex !== -1) {
+            loadTrack(state.currentTrackIndex, true, false); // Load for real
+        }
+        return;
     }
-    */
+
     dom.audioPlayer.play().then(() => {
         state.isPlaying = true;
         updatePlayPauseButtons();
+        // Only show black screen if it's not already visible
         if (!dom.blackScreenMode.style.display || dom.blackScreenMode.style.display === 'none') {
             showBlackScreenMode();
         }
@@ -88,19 +87,29 @@ export function pauseAudio() {
 }
 
 export function togglePlayPause() {
-    // --- MODIFIED: Removed AudioContext initialization on first play ---
-    /*
-    if (!state.isAudioContextInitialized) {
-        initializeAudioContext();
-    }
-    */
     if (state.currentTrackIndex === -1 && state.flatAudioList.length > 0) {
-        loadTrack(0);
-    } else if (state.currentTrackIndex !== -1) {
-        if (state.isPlaying) {
-            pauseAudio();
+        // First run: Load and Play the first track
+        loadTrack(0, true, false); 
+        return;
+    }
+
+    if (state.currentTrackIndex !== -1) {
+        const track = state.flatAudioList[state.currentTrackIndex];
+        
+        // CHECK: Is the file actually loaded in the hardware player?
+        // If we did a "Lazy Load" on startup, audioPlayer.src will be empty or wrong.
+        const isSourceLoaded = dom.audioPlayer.src && dom.audioPlayer.src.includes(track.url);
+
+        if (!isSourceLoaded) {
+            // WAKE UP: User hit play after a cold boot. Load the file NOW.
+            loadTrack(state.currentTrackIndex, true, false); // lazyLoad = false
         } else {
-            playAudio();
+            // Normal toggle
+            if (state.isPlaying) {
+                pauseAudio();
+            } else {
+                playAudio();
+            }
         }
     }
 }
@@ -108,13 +117,13 @@ export function togglePlayPause() {
 export function playNext() {
     if (state.flatAudioList.length === 0) return;
     let newIndex = (state.currentTrackIndex + 1) % state.flatAudioList.length;
-    loadTrack(newIndex);
+    loadTrack(newIndex, true, false); // Force real load
 }
 
 export function playPrev() {
     if (state.flatAudioList.length === 0) return;
     let newIndex = (state.currentTrackIndex - 1 + state.flatAudioList.length) % state.flatAudioList.length;
-    loadTrack(newIndex);
+    loadTrack(newIndex, true, false); // Force real load
 }
 
 export function restartAudio() {

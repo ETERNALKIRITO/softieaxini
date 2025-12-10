@@ -63,13 +63,12 @@ export function loadState() {
 
             // Restore Track
             if (loaded.currentTrackIndex !== undefined && loaded.currentTrackIndex < state.flatAudioList.length) {
-                // Load the track, but DO NOT play it yet
-                loadTrack(loaded.currentTrackIndex, false); 
                 
-                // --- IOS FIX: DO NOT SET CURRENT TIME HERE ---
-                // Attempts to set currentTime on a cold boot (startup) causes iOS to freeze/deadlock.
-                // We intentionally leave the track at 0:00.
-                // The visual sliders will update automatically when the track loads.
+                // --- UPDATE THIS LINE ---
+                // We pass 'false' for playImmediately, and 'true' for lazyLoad.
+                // This updates the Title/Artist but DOES NOT touch the audio hardware yet.
+                loadTrack(loaded.currentTrackIndex, false, true); 
+
             }
         } catch (e) {
             console.error("Error loading state:", e);
