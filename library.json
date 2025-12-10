@@ -29,6 +29,8 @@
         { "title": "Glitchtale OST True Love", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/audioboard-glitchtale-ost-true-love.mp3?updatedAt=1747151607594" },
         { "title": "JPN Amend", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/jpn-amend.mp3?updatedAt=1747151603012" },
         { "title": "Cute Depressed", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/cute-depressed.mp3?updatedAt=1747151618812" },
+        { "title": "Cute Depressed (Slowed)", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/cute-depressed-slowed.mp3" },
+        { "title": "Lost Umbrella", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/lost-umbrella.mp3" },
         { "title": "Blue Horizon (Slowed)", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/blue-horizion-slowed.mp3?updatedAt=1747151633639" },
         { "title": "Blue Horizon (Ultra Slowed)", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/blue-horizion-ultra-slowed.mp3?updatedAt=1747151596123" },
         { "title": "Nursery Phonk", "url": "https://ik.imagekit.io/ut3w2pq43i/AUDIO/nursery-phonk.mp3?updatedAt=1747151626695" },
@@ -136,6 +138,9 @@
         { "title": "Dekho Na Dekho", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/dekho-na-dekho.mp3?updatedAt=1747151777337" },
         { "title": "Bheegi Bheegi Raaton Mein", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/bheegi-bheegi-raaton-mein.mp3?updatedAt=1763019809955" },
         { "title": "Boondo Se Baatein", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/boondo-se-baatein.mp3" },
-        { "title": "Obsessed", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/Obsessed.mp3?updatedAt=1765096965246" }
+        { "title": "Obsessed", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/Obsessed.mp3?updatedAt=1765096965246" },
+        { "title": "Young Girl A", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/young-girl-a.mp3" },
+        { "title": "Fukashigi No Carte", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/fukashigi-no-carte.mp3" }
+        
     ]
 }
