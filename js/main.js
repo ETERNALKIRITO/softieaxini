@@ -5,11 +5,9 @@ import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, to
 import { togglePlayPause, playNext, playPrev, restartAudio, seek, pauseAudio, setVolume, loadTrack } from './player.js'; 
 import { saveState, loadState } from './persistence.js';
 
-// REMOVED vConsole vars
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // REMOVED vConsole init
 
     await loadLibraryData();
 
@@ -43,8 +41,6 @@ function toggleSidebar() {
 function setupEventListeners() {
     dom.menuToggleBtn.addEventListener('click', toggleSidebar);
     dom.overlay.addEventListener('click', toggleSidebar);
-    
-    // REMOVED Console toggle listener
 
     dom.fullscreenBtn.addEventListener('click', toggleFullscreen);
 
@@ -52,16 +48,6 @@ function setupEventListeners() {
         state.isZoomAllowed = e.target.checked;
         applyZoomState();
         saveState(); 
-    });
-
-      // 1. SMART UPDATE LISTENER (Keeps Music)
-    dom.smartUpdateBtn.addEventListener('click', async () => {
-        const confirmed = confirm("UPDATE APP?\n\nThis will update the app code to the latest version.\n\nYour downloaded music will be SAFE and kept offline.");
-        if (confirmed) {
-            dom.smartUpdateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
-            dom.smartUpdateBtn.disabled = true;
-            await performReset('keepMusic');
-        }
     });
 
     // Hard Reset
@@ -159,45 +145,6 @@ function setupEventListeners() {
     document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
     document.addEventListener('mozfullscreenchange', updateFullscreenButton);
     document.addEventListener('MSFullscreenChange', updateFullscreenButton);
-}
-
-// MODIFIED RESET FUNCTION
-async function performReset(mode) {
-    console.log(`Starting reset in mode: ${mode}`);
-
-    // 1. Unregister Service Workers (Kills the "Old" Brain)
-    if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (const registration of registrations) {
-            await registration.unregister();
-        }
-    }
-
-    // 2. Smart Cache Deletion
-    if ('caches' in window) {
-        const keys = await caches.keys();
-        for (const key of keys) {
-            // IF mode is 'keepMusic' AND the cache name contains 'audio', SKIP IT.
-            // Note: We check if key matches the constant defined in sw.js (usually 'softieaxin-audio-v1')
-            if (mode === 'keepMusic' && key.includes('audio')) {
-                console.log(`Skipping deletion of audio cache: ${key}`);
-                continue; 
-            }
-
-            // Otherwise, delete it (App Shell, old versions, etc.)
-            await caches.delete(key);
-            console.log(`Deleted cache: ${key}`);
-        }
-    }
-
-    // 3. Clear Settings (Optional: You might want to keep settings too?)
-    // If you want to keep settings (like Theme/Volume) for Smart Update, wrap this in an if.
-    if (mode === 'wipeAll') {
-        localStorage.clear();
-    }
-
-    // 4. Force Reload
-    window.location.reload(true);
 }
 
 // NEW FUNCTION: The Cleaning Logic

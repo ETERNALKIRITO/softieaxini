@@ -31,7 +31,6 @@ export const dom = {
     zoomToggle: document.getElementById('zoomToggle'),
     reloadAppBtn: document.getElementById('reloadAppBtn'),
     hardResetBtn: document.getElementById('hardResetBtn'),
-    smartUpdateBtn: document.getElementById('smartUpdateBtn'),
     viewportMeta: document.getElementById('viewportMeta'),
 
     // Shuffle Dropdown Elements
