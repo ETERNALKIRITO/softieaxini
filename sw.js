@@ -1,19 +1,19 @@
 // sw.js (Final Corrected Version)
 
-const APP_CACHE_NAME = 'softieaxin-app-v14'; // Increment Version!
-const AUDIO_CACHE_NAME = 'softieaxin-audio-v14';
+const APP_CACHE_NAME = 'softieaxin-app-v13'; // Increment Version for the new cache list
+const AUDIO_CACHE_NAME = 'softieaxin-audio-v1';
 
 const APP_SHELL_URLS = [
     '/',
     'index.html',
-    'library.json', // Ensure this is here from the previous step
+    'library.json', 
     'style.css',
     'css/themes.css',
     'css/base.css',
     'css/components.css',
     'css/library.css',
     'css/player.css',
-    'css/sidebar.css', // Don't forget this one if you haven't added it!
+    'css/sidebar.css',
     'js/main.js',
     'js/config.js',
     'js/dom.js',
@@ -21,8 +21,8 @@ const APP_SHELL_URLS = [
     'js/ui.js',
     'js/player.js',
     'js/persistence.js',
-    // --- EXTERNAL ASSETS (Must be exact matches) ---
-    'https://unpkg.com/vconsole/dist/vconsole.min.js', // <--- ADD THIS LINE
+    // --- EXTERNAL ASSETS ---
+    // REMOVED: vConsole URL
     'https://ik.imagekit.io/9llyyueko/STATIC%20IMAGES/blank.png?updatedAt=1745897165289',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2'
@@ -34,7 +34,6 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(APP_CACHE_NAME).then(async cache => {
             console.log('[SW] Caching app shell assets.');
-            // We use individual requests to ensure credentials are omitted for all external assets
             const promises = APP_SHELL_URLS.map(url => {
                 const request = new Request(url, { credentials: 'omit' });
                 return fetch(request).then(response => {
@@ -80,7 +79,6 @@ self.addEventListener('fetch', event => {
                 const cachedResponse = await cache.match(event.request.url);
                 if (cachedResponse) return cachedResponse;
 
-                // Fetch the entire file, omitting range headers
                 const networkRequest = new Request(event.request.url, {
                     headers: event.request.headers,
                     mode: 'cors',
@@ -104,11 +102,9 @@ self.addEventListener('fetch', event => {
     else {
         event.respondWith(
             caches.match(event.request).then(cachedResponse => {
-                // If it exists in the cache, return it. This is the offline magic.
                 if (cachedResponse) {
                     return cachedResponse;
                 }
-                // Otherwise, go to the network.
                 return fetch(event.request);
             })
         );
@@ -123,7 +119,6 @@ self.addEventListener('message', event => {
             const cache = await caches.open(AUDIO_CACHE_NAME);
             const clients = await self.clients.matchAll();
 
-            // Helper function to post messages to all clients
             const postProgress = (message) => {
                 clients.forEach(client => client.postMessage(message));
             };
@@ -134,12 +129,10 @@ self.addEventListener('message', event => {
                     const cachedResponse = await cache.match(request);
 
                     if (cachedResponse) {
-                        // Already cached, just notify the client
                         postProgress({ type: 'AUDIO_CACHING_PROGRESS', url, status: 'cached' });
                         continue;
                     }
 
-                    // Not cached, so let's start the process
                     postProgress({ type: 'AUDIO_CACHING_PROGRESS', url, status: 'caching' });
 
                     const response = await fetch(request);
@@ -148,7 +141,6 @@ self.addEventListener('message', event => {
                     }
                     await cache.put(request, response.clone());
                     
-                    // Success!
                     postProgress({ type: 'AUDIO_CACHING_PROGRESS', url, status: 'cached' });
 
                 } catch (error) {
@@ -157,7 +149,6 @@ self.addEventListener('message', event => {
                 }
             }
 
-            // Send a final completion message
             postProgress({ type: 'AUDIO_CACHING_COMPLETE' });
 
         })());

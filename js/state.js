@@ -10,19 +10,17 @@ export const state = {
     tapCount: 0,
     tapTimeout: null,
     currentThemeIndex: 0,
+
+    // Web Audio API State
+    audioContext: null,
+    gainNode: null,
+    audioSource: null,
+    isAudioContextInitialized: false,
     
-    // Zoom state
-    isZoomAllowed: true,
-
-    // --- ADD THESE NEW VARIABLES ---
-    // These hold the saved data until the user taps "Play"
-    pendingVolume: 1, 
-    pendingCurrentTime: 0,
-
-    activeAudio: null  // This will hold the dynamic player
+    // MODIFIED: Zooming disabled by default
+    isZoomAllowed: false, 
 };
 
-// ... keep loadLibraryData and initializeFlatAudioList as they were ...
 export async function loadLibraryData() {
     try {
         const response = await fetch('library.json');
@@ -31,7 +29,7 @@ export async function loadLibraryData() {
         initializeFlatAudioList(); 
     } catch (error) {
         console.error("Error loading library:", error);
-        // alert("Failed to load audio library. Please refresh."); // Optional: remove alert to be less annoying
+        alert("Failed to load audio library. Please refresh.");
     }
 }
 

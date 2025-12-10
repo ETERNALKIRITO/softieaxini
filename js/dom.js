@@ -1,7 +1,8 @@
 // START: dom.js
-// js/dom.js: Selects and exports all necessary DOM elements.
+// js/dom.js
 
 export const dom = {
+    audioPlayer: document.getElementById('audioPlayer'),
     audioLibraryContainer: document.getElementById('audioLibrary'),
     playPauseBtn: document.getElementById('playPauseBtn'),
     prevBtn: document.getElementById('prevBtn'),
@@ -18,18 +19,17 @@ export const dom = {
     menuToggleBtn: document.getElementById('menuToggleBtn'),
     sidebar: document.getElementById('sidebar'),
     overlay: document.getElementById('overlay'),
-    toggleConsoleBtn: document.getElementById('toggleConsoleBtn'),
+    
+    // REMOVED: toggleConsoleBtn selection
     
     backgroundPlayToggle: document.getElementById('backgroundPlayToggle'),
     themeSwitcherBtn: document.getElementById('themeSwitcherBtn'),
     nowPlayingBar: document.getElementById('nowPlayingBar'),
     searchInput: document.getElementById('searchInput'),
 
-    // --- NEW ELEMENT ---
     fullscreenBtn: document.getElementById('fullscreenBtn'),
     zoomToggle: document.getElementById('zoomToggle'),
     reloadAppBtn: document.getElementById('reloadAppBtn'),
-    factoryResetBtn: document.getElementById('factoryResetBtn'),
     viewportMeta: document.getElementById('viewportMeta'),
 
     // Shuffle Dropdown Elements
@@ -40,7 +40,7 @@ export const dom = {
     shuffleSongsBtn: document.getElementById('shuffleSongsBtn'),
     shuffleAudiosBtn: document.getElementById('shuffleAudiosBtn'),
     shuffleAllBtn: document.getElementById('shuffleAllBtn'),
-    resetLibraryBtn: document.getElementById('resetLibraryBtn'), // Good to have a reset
+    resetLibraryBtn: document.getElementById('resetLibraryBtn'),
 
     // Black Screen Mode Elements
     blackScreenMode: document.getElementById('blackScreenMode'),

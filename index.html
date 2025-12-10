@@ -3,10 +3,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    
+    <!-- MODIFIED: Brute force no-zoom enabled by default here -->
     <meta
       id="viewportMeta"
       name="viewport"
-      content="width=device-width, initial-scale=1.0"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
 
     <!-- START: PWA and iOS Home Screen Configuration -->
@@ -34,7 +36,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <script src="https://unpkg.com/vconsole/dist/vconsole.min.js"></script>
+    <!-- REMOVED: vConsole Script -->
   </head>
   <body>
     <!-- START: NEW OVERLAY AND SIDEBAR ELEMENTS -->
@@ -87,13 +89,8 @@
         <button id="reloadAppBtn" title="Reload the application">
           <i class="fas fa-sync-alt"></i> Reload App
         </button>
-        <button id="factoryResetBtn" title="Wipe Data and Reset" style="border-color: #ff4d4d; color: #ff4d4d;">
-        <i class="fas fa-bomb"></i> Factory Reset
-    </button>
         <!-- END: NEW FULLSCREEN BUTTON -->
-        <button id="toggleConsoleBtn" title="Toggle Developer Console">
-          <i class="fas fa-terminal"></i> Toggle Console
-        </button>
+        <!-- REMOVED: Toggle Console Button -->
       </div>
     </div>
     <!-- END: NEW OVERLAY AND SIDEBAR ELEMENTS -->
@@ -105,7 +102,6 @@
           <button id="menuToggleBtn" title="Open Settings">
             <i class="fas fa-bars"></i>
           </button>
-          <!-- The H1 title and the .app-controls div have been removed -->
         </div>
         <!-- END: MODIFIED HEADER -->
       </header>
@@ -165,6 +161,8 @@
         </div>
       </div>
 
+      <!-- The main audio player element -->
+      <audio id="audioPlayer" crossorigin="anonymous"></audio>
 
       <!-- Black Screen Focus Mode -->
       <div id="blackScreenMode" class="black-screen-mode" style="display: none">
@@ -197,8 +195,6 @@
       </div>
     </div>
 
-    <!-- THIS IS THE CRUCIAL CHANGE -->
     <script type="module" src="js/main.js"></script>
   </body>
 </html>
-<!-- END: index.html -->
