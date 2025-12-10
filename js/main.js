@@ -189,11 +189,6 @@ function setupEventListeners() {
     dom.progressBar.addEventListener('input', () => seek(dom.progressBar));
     dom.bsProgressBar.addEventListener('input', () => seek(dom.bsProgressBar));
 
-    // Audio Player Events
-    dom.audioPlayer.addEventListener('timeupdate', handleTimeUpdate);
-    dom.audioPlayer.addEventListener('loadedmetadata', handleMetadataLoaded);
-    dom.audioPlayer.addEventListener('ended', playNext);
-
     // App Controls (from sidebar)
     dom.themeSwitcherBtn.addEventListener('click', cycleTheme);
     dom.backgroundPlayToggle.addEventListener('change', handleBackgroundToggle);
@@ -249,22 +244,6 @@ function updateFullscreenButton() {
 }
 
 // --- EVENT HANDLER FUNCTIONS ---
-function handleTimeUpdate() {
-    const currentTime = dom.audioPlayer.currentTime;
-    dom.progressBar.value = currentTime;
-    dom.bsProgressBar.value = currentTime;
-    dom.currentTimeDisplay.textContent = formatTime(currentTime);
-    dom.bsCurrentTime.textContent = formatTime(currentTime);
-    saveState();
-}
-
-function handleMetadataLoaded() {
-    const duration = dom.audioPlayer.duration;
-    dom.progressBar.max = duration;
-    dom.bsProgressBar.max = duration;
-    dom.totalTimeDisplay.textContent = formatTime(duration);
-    dom.bsTotalTime.textContent = formatTime(duration);
-}
 
 function handleBackgroundToggle(e) {
     state.backgroundPlayEnabled = e.target.checked;

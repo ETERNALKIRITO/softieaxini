@@ -17,7 +17,9 @@ export const state = {
     // --- ADD THESE NEW VARIABLES ---
     // These hold the saved data until the user taps "Play"
     pendingVolume: 1, 
-    pendingCurrentTime: 0 
+    pendingCurrentTime: 0,
+
+    activeAudio: null  // This will hold the dynamic player
 };
 
 // ... keep loadLibraryData and initializeFlatAudioList as they were ...

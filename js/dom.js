@@ -2,7 +2,6 @@
 // js/dom.js: Selects and exports all necessary DOM elements.
 
 export const dom = {
-    audioPlayer: document.getElementById('audioPlayer'),
     audioLibraryContainer: document.getElementById('audioLibrary'),
     playPauseBtn: document.getElementById('playPauseBtn'),
     prevBtn: document.getElementById('prevBtn'),

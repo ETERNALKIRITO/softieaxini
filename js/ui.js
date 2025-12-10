@@ -213,3 +213,21 @@ export function toggleLockScreen() {
     dom.bsLockBtn.title = state.isBlackScreenLocked ? "Unlock Screen" : "Lock Screen";
     dom.blackScreenMode.classList.toggle('locked', state.isBlackScreenLocked);
 }
+
+export function updateProgressUI(currentTime, duration) {
+    // Update main bar
+    dom.progressBar.value = currentTime;
+    dom.currentTimeDisplay.textContent = formatTime(currentTime);
+    
+    // Update black screen bar
+    dom.bsProgressBar.value = currentTime;
+    dom.bsCurrentTime.textContent = formatTime(currentTime);
+
+    // Update totals if available
+    if (duration) {
+        dom.progressBar.max = duration;
+        dom.bsProgressBar.max = duration;
+        dom.totalTimeDisplay.textContent = formatTime(duration);
+        dom.bsTotalTime.textContent = formatTime(duration);
+    }
+}

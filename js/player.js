@@ -2,14 +2,37 @@
 
 import { dom } from './dom.js';
 import { state } from './state.js';
-import { updatePlayPauseButtons, updatePlayingIndicator, showBlackScreenMode, formatTime } from './ui.js'; // Ensure formatTime is imported
+import { updatePlayPauseButtons, updatePlayingIndicator, showBlackScreenMode, updateProgressUI } from './ui.js';
 import { saveState } from './persistence.js';
 
+// --- HELPER: Get or Create Audio ---
+function getAudio() {
+    if (!state.activeAudio) {
+        // Create the player dynamically (The "Ghost" Player)
+        state.activeAudio = new Audio();
+        state.activeAudio.crossOrigin = "anonymous";
+        
+        // Attach Event Listeners immediately
+        state.activeAudio.addEventListener('timeupdate', () => {
+            updateProgressUI(state.activeAudio.currentTime, state.activeAudio.duration);
+            saveState(); // Save progress as we go
+        });
+
+        state.activeAudio.addEventListener('loadedmetadata', () => {
+             updateProgressUI(state.activeAudio.currentTime, state.activeAudio.duration);
+        });
+
+        state.activeAudio.addEventListener('ended', playNext);
+    }
+    return state.activeAudio;
+}
+
 export function setVolume(volume) {
-    // Standard volume change
-    dom.audioPlayer.volume = volume;
+    state.pendingVolume = volume;
     dom.volumeBar.value = volume;
-    state.pendingVolume = volume; // Keep state in sync
+    if (state.activeAudio) {
+        state.activeAudio.volume = volume;
+    }
     saveState();
 }
 
@@ -18,7 +41,7 @@ export function loadTrack(index, playImmediately = true, lazyLoad = false) {
         state.currentTrackIndex = index;
         const track = state.flatAudioList[index];
 
-        // 1. UI Update (Always safe)
+        // 1. UI Update
         dom.npTitle.textContent = track.title;
         dom.npArtist.textContent = ""; 
         dom.bsTrackTitle.textContent = track.title;
@@ -26,22 +49,15 @@ export function loadTrack(index, playImmediately = true, lazyLoad = false) {
 
         // 2. Audio Logic
         if (lazyLoad) {
-            // --- LAZY MODE ---
-            // Do absolutely nothing to the audio hardware.
             state.isPlaying = false;
             updatePlayPauseButtons();
         } else {
-            // --- ACTIVE MODE ---
-            // Check if we need to load the source
-            if (!dom.audioPlayer.src || !dom.audioPlayer.src.includes(track.url)) {
-                dom.audioPlayer.src = track.url;
-                
-                // APPLY PENDING VOLUME NOW
-                if (state.pendingVolume !== undefined) {
-                    dom.audioPlayer.volume = state.pendingVolume;
-                }
-                
-                dom.audioPlayer.load();
+            const audio = getAudio(); // Create if needed
+            
+            if (!audio.src || !audio.src.includes(track.url)) {
+                audio.src = track.url;
+                if (state.pendingVolume !== undefined) audio.volume = state.pendingVolume;
+                audio.load();
             }
 
             if (playImmediately) {
@@ -50,31 +66,28 @@ export function loadTrack(index, playImmediately = true, lazyLoad = false) {
                 updatePlayPauseButtons();
             }
         }
-        
         saveState();
     }
 }
 
 export function playAudio() {
-    // 1. Handle Lazy Load Wake-up
-    if (!dom.audioPlayer.src) {
+    const audio = getAudio(); // Create if needed
+
+    // Wake up from Lazy Load
+    if (!audio.src) {
         if(state.currentTrackIndex !== -1) {
-            // Force a real load now
             loadTrack(state.currentTrackIndex, true, false); 
         }
         return;
     }
 
-    // 2. Apply Pending Time (Seek) if it exists
-    // We only do this ONCE after a fresh boot
+    // Apply Pending Time
     if (state.pendingCurrentTime > 0) {
-        const targetTime = state.pendingCurrentTime;
-        state.pendingCurrentTime = 0; // Clear it so we don't seek every time we hit play
-        dom.audioPlayer.currentTime = targetTime;
+        audio.currentTime = state.pendingCurrentTime;
+        state.pendingCurrentTime = 0; 
     }
 
-    // 3. Play
-    dom.audioPlayer.play().then(() => {
+    audio.play().then(() => {
         state.isPlaying = true;
         updatePlayPauseButtons();
         if (!dom.blackScreenMode.style.display || dom.blackScreenMode.style.display === 'none') {
@@ -88,67 +101,65 @@ export function playAudio() {
 }
 
 export function pauseAudio() {
-    dom.audioPlayer.pause();
+    if (state.activeAudio) {
+        state.activeAudio.pause();
+    }
     state.isPlaying = false;
     updatePlayPauseButtons();
 }
 
 export function togglePlayPause() {
-    // Case 1: First run ever
     if (state.currentTrackIndex === -1 && state.flatAudioList.length > 0) {
         loadTrack(0, true, false); 
         return;
     }
 
-    // Case 2: Resume from saved state
     if (state.currentTrackIndex !== -1) {
-        const track = state.flatAudioList[state.currentTrackIndex];
-        const isSourceLoaded = dom.audioPlayer.src && dom.audioPlayer.src.includes(track.url);
+        // If audio doesn't exist yet, we must "Wake Up"
+        if (!state.activeAudio || !state.activeAudio.src) {
+             loadTrack(state.currentTrackIndex, true, false);
+             return;
+        }
 
-        if (!isSourceLoaded) {
-            // Wake up from Lazy Load
-            loadTrack(state.currentTrackIndex, true, false);
+        if (state.isPlaying) {
+            pauseAudio();
         } else {
-            // Normal toggle
-            if (state.isPlaying) {
-                pauseAudio();
-            } else {
-                playAudio();
-            }
+            playAudio();
         }
     }
 }
 
 export function playNext() {
     if (state.flatAudioList.length === 0) return;
-    state.pendingCurrentTime = 0; // Reset pending time on manual change
+    state.pendingCurrentTime = 0; 
     let newIndex = (state.currentTrackIndex + 1) % state.flatAudioList.length;
     loadTrack(newIndex, true, false); 
 }
 
 export function playPrev() {
     if (state.flatAudioList.length === 0) return;
-    state.pendingCurrentTime = 0; // Reset pending time on manual change
+    state.pendingCurrentTime = 0; 
     let newIndex = (state.currentTrackIndex - 1 + state.flatAudioList.length) % state.flatAudioList.length;
     loadTrack(newIndex, true, false); 
 }
 
 export function restartAudio() {
-    if (state.currentTrackIndex !== -1) {
-        dom.audioPlayer.currentTime = 0;
+    if (state.currentTrackIndex !== -1 && state.activeAudio) {
+        state.activeAudio.currentTime = 0;
         state.pendingCurrentTime = 0;
         if (!state.isPlaying) playAudio();
     }
 }
 
 export function seek(barElement) {
-    // If user seeks while in "Lazy Mode", we must wake up the player first
-    if (!dom.audioPlayer.src && state.currentTrackIndex !== -1) {
-        // Set the pending time to where they dragged
-        state.pendingCurrentTime = barElement.value;
-        // Load and play
-        loadTrack(state.currentTrackIndex, true, false);
+    state.pendingCurrentTime = barElement.value;
+    
+    // If player exists, seek immediately
+    if (state.activeAudio && state.activeAudio.src) {
+        state.activeAudio.currentTime = state.pendingCurrentTime;
+        state.pendingCurrentTime = 0; // Clear pending
     } else {
-        dom.audioPlayer.currentTime = barElement.value;
+        // If in lazy mode, wake it up
+        loadTrack(state.currentTrackIndex, true, false);
     }
 }
