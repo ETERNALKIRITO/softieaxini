@@ -125,6 +125,8 @@
         { "title": "Tarantella", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/tarantella.mp3" },
         { "title": "Espresso", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/espresso.mp3" },
         { "title": "Take A Slice", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/take-a-slice.mp3" },
+         { "title": "Young Girl A", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/young-girl-a.mp3" },
+        { "title": "Fukashigi No Carte", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/fukashigi-no-carte.mp3" },
         { "title": "Laung Mai Laachi", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/LaungMaiLaachi.mp3" },
         { "title": "Saki Saki", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/Saki-Saki.mp3" },
         { "title": "Surmedani", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/Surmedani.mp3" },
@@ -138,9 +140,7 @@
         { "title": "Dekho Na Dekho", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/dekho-na-dekho.mp3?updatedAt=1747151777337" },
         { "title": "Bheegi Bheegi Raaton Mein", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/bheegi-bheegi-raaton-mein.mp3?updatedAt=1763019809955" },
         { "title": "Boondo Se Baatein", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/boondo-se-baatein.mp3" },
-        { "title": "Obsessed", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/Obsessed.mp3?updatedAt=1765096965246" },
-        { "title": "Young Girl A", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/young-girl-a.mp3" },
-        { "title": "Fukashigi No Carte", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/fukashigi-no-carte.mp3" }
+        { "title": "Obsessed", "url": "https://ik.imagekit.io/ut3w2pq43i/SONG/Obsessed.mp3?updatedAt=1765096965246" }
         
     ]
 }
