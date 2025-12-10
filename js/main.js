@@ -74,6 +74,35 @@ function setupEventListeners() {
         toggleSidebar();
     });
 
+    if (dom.factoryResetBtn) {
+        dom.factoryResetBtn.addEventListener('click', async () => {
+            if (confirm("This will wipe all data, settings, and cached songs. The app will reset completely. Continue?")) {
+                // 1. Clear LocalStorage
+                localStorage.clear();
+
+                // 2. Clear Service Worker Caches
+                if ('caches' in window) {
+                    const keys = await caches.keys();
+                    for (const key of keys) {
+                        await caches.delete(key);
+                    }
+                }
+
+                // 3. Unregister Service Worker
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+
+                // 4. Force Reload
+                window.location.reload(true);
+            }
+        });
+    }
+
+
     // Fullscreen Listener
     dom.fullscreenBtn.addEventListener('click', toggleFullscreen);
 

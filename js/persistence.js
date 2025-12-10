@@ -1,20 +1,22 @@
-// js/persistence.js: Handles saving state to and loading from localStorage.
+// js/persistence.js
 
 import { dom } from './dom.js';
 import { state } from './state.js';
 import { themes } from './config.js';
-// --- FIX: Added applyZoomState to the import list below ---
 import { applyTheme, formatTime, applyZoomState } from './ui.js';
 import { loadTrack, setVolume } from './player.js';
 
 export function saveState() {
-    // Save Zoom Preference (Save this regardless of whether a track is playing)
+    // Save Zoom Preference
     localStorage.setItem('softieAxinZoom', state.isZoomAllowed);
 
+    // Only save track state if we have a valid index
     if (state.currentTrackIndex === -1) return;
     
     const appState = {
         currentTrackIndex: state.currentTrackIndex,
+        // We still SAVE the time, in case you want to use it later,
+        // but we won't restore it automatically on boot for stability.
         currentTime: dom.audioPlayer.currentTime,
         volume: dom.volumeBar.value
     };
@@ -22,7 +24,7 @@ export function saveState() {
 }
 
 export function loadState() {
-    // Load Theme
+    // 1. Load Theme
     const savedTheme = localStorage.getItem('softieAxinTheme');
     if (savedTheme && themes.includes(savedTheme)) {
         state.currentThemeIndex = themes.indexOf(savedTheme);
@@ -31,60 +33,48 @@ export function loadState() {
         applyTheme(themes[0]);
     }
 
-    // Load Background Play setting
+    // 2. Load Background Play setting
     const savedBgPlay = localStorage.getItem('softieAxinBgPlay');
     if (savedBgPlay !== null) {
         state.backgroundPlayEnabled = JSON.parse(savedBgPlay);
         dom.backgroundPlayToggle.checked = state.backgroundPlayEnabled;
     }
 
-    // Load Zoom Preference
+    // 3. Load Zoom Preference
     const savedZoom = localStorage.getItem('softieAxinZoom');
     if (savedZoom !== null) {
         state.isZoomAllowed = JSON.parse(savedZoom);
     } else {
         state.isZoomAllowed = true; 
     }
-    
-    // Apply the loaded setting (This will now work because it is imported)
     applyZoomState(); 
 
-    // Load Player State
+    // 4. Load Player State (THE FIX IS HERE)
     const savedState = localStorage.getItem('softieAxinState');
     if (savedState) {
         try {
             const loaded = JSON.parse(savedState);
-            if (loaded.currentTrackIndex !== undefined && loaded.currentTrackIndex < state.flatAudioList.length) {
-                loadTrack(loaded.currentTrackIndex, false); // Don't autoplay on load
-
-                if (loaded.currentTime) {
-                    const setTimeOnMetadata = () => {
-                        dom.audioPlayer.currentTime = loaded.currentTime;
-                        dom.totalTimeDisplay.textContent = formatTime(dom.audioPlayer.duration);
-                        dom.bsTotalTime.textContent = formatTime(dom.audioPlayer.duration);
-                        dom.currentTimeDisplay.textContent = formatTime(loaded.currentTime);
-                        dom.bsCurrentTime.textContent = formatTime(loaded.currentTime);
-                        dom.progressBar.value = loaded.currentTime;
-                        dom.bsProgressBar.value = loaded.currentTime;
-                    };
-
-                    if (dom.audioPlayer.readyState >= 1) { 
-                        setTimeOnMetadata();
-                    } else { 
-                        dom.audioPlayer.addEventListener('loadedmetadata', setTimeOnMetadata, { once: true });
-                    }
-                }
-               if (loaded.volume !== undefined) {
+            
+            // Restore Volume
+            if (loaded.volume !== undefined) {
                 dom.volumeBar.value = loaded.volume;
                 dom.audioPlayer.volume = loaded.volume;
             }
 
+            // Restore Track
+            if (loaded.currentTrackIndex !== undefined && loaded.currentTrackIndex < state.flatAudioList.length) {
+                // Load the track, but DO NOT play it yet
+                loadTrack(loaded.currentTrackIndex, false); 
+                
+                // --- IOS FIX: DO NOT SET CURRENT TIME HERE ---
+                // Attempts to set currentTime on a cold boot (startup) causes iOS to freeze/deadlock.
+                // We intentionally leave the track at 0:00.
+                // The visual sliders will update automatically when the track loads.
             }
         } catch (e) {
             console.error("Error loading state:", e);
+            // If state is corrupt, clear it to prevent infinite crashes
             localStorage.removeItem('softieAxinState');
         }
-    } else {
-        dom.audioPlayer.volume = dom.volumeBar.value;
     }
 }

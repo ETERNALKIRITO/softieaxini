@@ -30,6 +30,7 @@ export const dom = {
     fullscreenBtn: document.getElementById('fullscreenBtn'),
     zoomToggle: document.getElementById('zoomToggle'),
     reloadAppBtn: document.getElementById('reloadAppBtn'),
+    factoryResetBtn: document.getElementById('factoryResetBtn'),
     viewportMeta: document.getElementById('viewportMeta'),
 
     // Shuffle Dropdown Elements
