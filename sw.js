@@ -1,6 +1,6 @@
 // sw.js (Final Corrected Version)
 
-const APP_CACHE_NAME = 'softieaxin-app-v12'; // Increment Version!
+const APP_CACHE_NAME = 'softieaxin-app-v13'; // Increment Version!
 const AUDIO_CACHE_NAME = 'softieaxin-audio-v1';
 
 const APP_SHELL_URLS = [
