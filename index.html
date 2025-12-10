@@ -15,8 +15,10 @@
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#8A4DFF" />
 
-    <!-- Apple-specific tags -->
+    <!-- FIX: Added standard tag first, kept Apple one for legacy iOS support -->
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
@@ -36,7 +38,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <!-- REMOVED vConsole Script -->
   </head>
   <body>
     <!-- START: NEW OVERLAY AND SIDEBAR ELEMENTS -->
@@ -89,7 +90,6 @@
         <button id="reloadAppBtn" title="Reload the application">
           <i class="fas fa-sync-alt"></i> Reload App
         </button>
-        <!-- REMOVED Toggle Console Button -->
       </div>
     </div>
     <!-- END: NEW OVERLAY AND SIDEBAR ELEMENTS -->
