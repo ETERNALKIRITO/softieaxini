@@ -54,6 +54,18 @@ function setupEventListeners() {
         saveState(); 
     });
 
+    // Hard Reset
+    dom.hardResetBtn.addEventListener('click', async () => {
+        const confirmed = confirm("⚠️ FACTORY RESET ⚠️\n\nThis will delete all offline music, reset your settings, and force a download of the newest version.\n\nContinue?");
+        
+        if (confirmed) {
+            dom.hardResetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Wiping Data...';
+            dom.hardResetBtn.disabled = true;
+            await performHardReset();
+        }
+    });
+
+
     dom.reloadAppBtn.addEventListener('click', () => {
         dom.reloadAppBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reloading...';
         window.location.reload();
@@ -138,6 +150,34 @@ function setupEventListeners() {
     document.addEventListener('mozfullscreenchange', updateFullscreenButton);
     document.addEventListener('MSFullscreenChange', updateFullscreenButton);
 }
+
+// NEW FUNCTION: The Cleaning Logic
+async function performHardReset() {
+    // 1. Unregister Service Workers
+    if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+            await registration.unregister();
+            console.log('Service Worker unregistered.');
+        }
+    }
+
+    // 2. Delete All Caches (App Shell + Audio)
+    if ('caches' in window) {
+        const keys = await caches.keys();
+        for (const key of keys) {
+            await caches.delete(key);
+            console.log(`Cache deleted: ${key}`);
+        }
+    }
+
+    // 3. Clear Local Storage (Settings, Volume, Track)
+    localStorage.clear();
+
+    // 4. Force Reload from Server (ignoring browser cache)
+    window.location.reload(true);
+}
+
 
 function toggleFullscreen() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
