@@ -1,21 +1,83 @@
-// js/ui.js (Corrected for Ghost Audio)
+// js/ui.js
 
 import { dom } from './dom.js';
 import { state } from './state.js';
 import { themes } from './config.js'; 
 import { loadTrack, pauseAudio } from './player.js';
 
-export function applyZoomState() {
-    if (state.isZoomAllowed) {
-        dom.viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
-        document.body.style.touchAction = 'auto';
-    } else {
-        dom.viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-        document.body.style.touchAction = 'pan-x pan-y'; 
+// --- LEVEL 3: JavaScript Brute Force Functions ---
+
+// 1. Block "Ctrl + Scroll" (Desktop Mouse Wheel)
+const blockWheel = (e) => {
+    if (e.ctrlKey) {
+        e.preventDefault();
+        // console.log("Blocked: Ctrl + Scroll");
     }
+};
+
+// 2. Block Keyboard Zooming (Ctrl + "+", "-", "0")
+const blockKey = (e) => {
+    if ((e.ctrlKey || e.metaKey) && 
+        (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+        e.preventDefault();
+        // console.log("Blocked: Keyboard Zoom");
+    }
+};
+
+// 3. Block "Pinch to Zoom" (iOS Safari / Mobile)
+const blockGesture = (e) => {
+    e.preventDefault();
+    // console.log("Blocked: Gesture/Pinch");
+};
+
+// 4. Block "Double-Tap to Zoom"
+let lastTouchEnd = 0;
+const blockDoubleTap = (e) => {
+    const now = (new Date()).getTime();
+    // If the time between two taps is less than 300ms, it's a double tap
+    if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+        // console.log("Blocked: Double Tap");
+    }
+    lastTouchEnd = now;
+};
+
+export function applyZoomState() {
     dom.zoomToggle.checked = state.isZoomAllowed;
+
+    if (state.isZoomAllowed) {
+        // --- ALLOW ZOOMING ---
+        
+        // 1. Meta Tag
+        dom.viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+        
+        // 2. CSS
+        document.body.classList.remove('zoom-locked');
+        
+        // 3. Remove Brute Force Listeners
+        window.removeEventListener('wheel', blockWheel);
+        window.removeEventListener('keydown', blockKey);
+        document.removeEventListener('gesturestart', blockGesture);
+        document.removeEventListener('touchend', blockDoubleTap);
+
+    } else {
+        // --- BLOCK ZOOMING (Brute Force Mode) ---
+
+        // 1. Meta Tag
+        dom.viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        
+        // 2. CSS
+        document.body.classList.add('zoom-locked');
+
+        // 3. Add Brute Force Listeners
+        window.addEventListener('wheel', blockWheel, { passive: false }); // passive: false is REQUIRED
+        window.addEventListener('keydown', blockKey);
+        document.addEventListener('gesturestart', blockGesture);
+        document.addEventListener('touchend', blockDoubleTap, false);
+    }
 }
 
+// Helper: Fisher-Yates Shuffle Algorithm
 export function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -26,6 +88,7 @@ export function shuffleArray(array) {
 
 export function filterLibrary() {
     const searchTerm = dom.searchInput.value.toLowerCase().trim();
+    
     if (dom.audioLibraryContainer.querySelector('.category h2').textContent.includes('Shuffled') || 
         dom.audioLibraryContainer.querySelector('.category h2').textContent.includes('All Tracks')) {
         
@@ -167,17 +230,26 @@ export function updatePlayingIndicator() {
 }
 
 export function formatTime(seconds) {
-    if (!seconds || isNaN(seconds)) return "0:00";
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
 export function applyTheme(themeName) {
+    // Keep zoom-locked class if it exists
+    const isZoomLocked = document.body.classList.contains('zoom-locked');
+    
     document.body.className = '';
+    
     if (themeName !== "default") {
         document.body.classList.add(themeName);
     }
+    
+    // Re-apply zoom lock if necessary
+    if (isZoomLocked) {
+        document.body.classList.add('zoom-locked');
+    }
+    
     localStorage.setItem('softieAxinTheme', themeName);
 }
 
@@ -186,18 +258,12 @@ export function cycleTheme() {
     applyTheme(themes[state.currentThemeIndex]);
 }
 
-// --- FIX: UPDATED BLACK SCREEN FUNCTION ---
 export function showBlackScreenMode() {
     if (state.currentTrackIndex === -1) return;
     dom.blackScreenMode.style.display = 'flex';
-    
-    // Use state.activeAudio instead of dom.audioPlayer
-    const currentTime = state.activeAudio ? state.activeAudio.currentTime : state.pendingCurrentTime;
-    const duration = state.activeAudio ? state.activeAudio.duration : 0;
-
-    dom.bsProgressBar.value = currentTime;
-    dom.bsCurrentTime.textContent = formatTime(currentTime);
-    dom.bsTotalTime.textContent = formatTime(duration);
+    dom.bsProgressBar.value = dom.audioPlayer.currentTime;
+    dom.bsCurrentTime.textContent = formatTime(dom.audioPlayer.currentTime);
+    dom.bsTotalTime.textContent = formatTime(dom.audioPlayer.duration || 0);
     updatePlayPauseButtons();
 }
 
@@ -212,23 +278,4 @@ export function toggleLockScreen() {
     dom.bsLockBtn.innerHTML = state.isBlackScreenLocked ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-unlock"></i>';
     dom.bsLockBtn.title = state.isBlackScreenLocked ? "Unlock Screen" : "Lock Screen";
     dom.blackScreenMode.classList.toggle('locked', state.isBlackScreenLocked);
-}
-
-// --- NEW FUNCTION TO HANDLE PROGRESS UPDATES ---
-export function updateProgressUI(currentTime, duration) {
-    // Update main bar
-    dom.progressBar.value = currentTime;
-    dom.currentTimeDisplay.textContent = formatTime(currentTime);
-    
-    // Update black screen bar
-    dom.bsProgressBar.value = currentTime;
-    dom.bsCurrentTime.textContent = formatTime(currentTime);
-
-    // Update totals if available
-    if (duration) {
-        dom.progressBar.max = duration;
-        dom.bsProgressBar.max = duration;
-        dom.totalTimeDisplay.textContent = formatTime(duration);
-        dom.bsTotalTime.textContent = formatTime(duration);
-    }
 }

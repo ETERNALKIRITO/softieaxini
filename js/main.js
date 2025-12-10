@@ -1,22 +1,18 @@
 // js/main.js
-
 import { dom } from './dom.js';
 import { state, loadLibraryData, initializeFlatAudioList } from './state.js'; 
 import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary, updateTrackCacheStatus, applyZoomState, shuffleArray } from './ui.js';
 import { togglePlayPause, playNext, playPrev, restartAudio, seek, pauseAudio, setVolume, loadTrack } from './player.js'; 
 import { saveState, loadState } from './persistence.js';
 
-// REMOVED: vConsole variables
+// REMOVED vConsole vars
 
-// --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // REMOVED: vConsole Safety Check and Initialization
+    // REMOVED vConsole init
 
-    // Load the JSON Library
     await loadLibraryData();
 
-    // Render Library
     renderLibrary().then(() => {
         checkInitialCacheStatus();
     });
@@ -27,7 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     registerServiceWorker();
 });
 
-// --- Check cache on startup ---
 async function checkInitialCacheStatus() {
     if (!('caches' in window)) return;
     const cache = await caches.open('softieaxin-audio-v1');
@@ -46,16 +41,13 @@ function toggleSidebar() {
 }
 
 function setupEventListeners() {
-    // Sidebar Controls
     dom.menuToggleBtn.addEventListener('click', toggleSidebar);
     dom.overlay.addEventListener('click', toggleSidebar);
     
-    // REMOVED: Toggle Console Listener
+    // REMOVED Console toggle listener
 
-    // Fullscreen Listener
     dom.fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-    // Zoom Toggle Listener
     dom.zoomToggle.addEventListener('change', (e) => {
         state.isZoomAllowed = e.target.checked;
         applyZoomState();
@@ -67,7 +59,6 @@ function setupEventListeners() {
         window.location.reload();
     });
 
-    // --- SHUFFLE DROPDOWN LOGIC ---
     dom.shuffleDropdownBtn.addEventListener('click', () => {
         dom.shuffleDropdownContainer.classList.toggle('active');
     });
@@ -83,7 +74,6 @@ function setupEventListeners() {
         }
 
         const shuffledList = shuffleArray(listToShuffle);
-
         state.flatAudioList = shuffledList; 
         state.currentTrackIndex = 0; 
 
@@ -108,7 +98,6 @@ function setupEventListeners() {
         toggleSidebar();
     });
 
-    // --- STANDARD PLAYER CONTROLS ---
     dom.playPauseBtn.addEventListener('click', togglePlayPause);
     dom.nextBtn.addEventListener('click', playNext);
     dom.prevBtn.addEventListener('click', playPrev);
@@ -127,7 +116,6 @@ function setupEventListeners() {
     dom.backgroundPlayToggle.addEventListener('change', handleBackgroundToggle);
     dom.cacheAllBtn.addEventListener('click', handleCacheAll);
 
-    // Focus Mode
     dom.bsPlayPauseBtn.addEventListener('click', togglePlayPause);
     dom.bsRestartBtn.addEventListener('click', restartAudio);
     dom.bsLockBtn.addEventListener('click', toggleLockScreen);
@@ -151,7 +139,6 @@ function setupEventListeners() {
     document.addEventListener('MSFullscreenChange', updateFullscreenButton);
 }
 
-// --- FULLSCREEN LOGIC ---
 function toggleFullscreen() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
         const el = document.documentElement;
@@ -174,7 +161,6 @@ function updateFullscreenButton() {
     }
 }
 
-// --- EVENT HANDLER FUNCTIONS ---
 function handleTimeUpdate() {
     const currentTime = dom.audioPlayer.currentTime;
     dom.progressBar.value = currentTime;
@@ -200,10 +186,8 @@ function handleBackgroundToggle(e) {
 function handleBlackScreenClick(e) {
     if (e.target.closest('.bs-content') || e.target.closest('.focus-mode-toggle')) return;
     if (state.isBlackScreenLocked) return;
-    
     state.tapCount++;
     if (state.tapTimeout) clearTimeout(state.tapTimeout);
-
     if (state.tapCount >= 4) {
         hideBlackScreenMode();
         state.tapCount = 0;
@@ -228,7 +212,6 @@ async function handleCacheAll() {
     });
 }
 
-// --- SERVICE WORKER REGISTRATION ---
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')

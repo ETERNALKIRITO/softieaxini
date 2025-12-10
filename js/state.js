@@ -1,5 +1,4 @@
 // js/state.js
-
 export const state = {
     audioLibrary: {}, 
     flatAudioList: [],
@@ -10,14 +9,11 @@ export const state = {
     tapCount: 0,
     tapTimeout: null,
     currentThemeIndex: 0,
-
-    // Web Audio API State
     audioContext: null,
     gainNode: null,
     audioSource: null,
     isAudioContextInitialized: false,
-    
-    // MODIFIED: Zooming disabled by default
+    // MODIFIED: Default Zoom State
     isZoomAllowed: false, 
 };
 
@@ -36,7 +32,6 @@ export async function loadLibraryData() {
 export function initializeFlatAudioList() {
     state.flatAudioList = []; 
     let globalIdx = 0;
-    
     for (const categoryName in state.audioLibrary) {
         if (state.audioLibrary.hasOwnProperty(categoryName)) {
             state.audioLibrary[categoryName].forEach(track => {

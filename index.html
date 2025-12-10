@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     
-    <!-- MODIFIED: Brute force no-zoom enabled by default here -->
+    <!-- LEVEL 1: Strict Meta Tag by default -->
     <meta
       id="viewportMeta"
       name="viewport"
@@ -36,7 +36,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <!-- REMOVED: vConsole Script -->
+    <!-- REMOVED vConsole Script -->
   </head>
   <body>
     <!-- START: NEW OVERLAY AND SIDEBAR ELEMENTS -->
@@ -89,25 +89,21 @@
         <button id="reloadAppBtn" title="Reload the application">
           <i class="fas fa-sync-alt"></i> Reload App
         </button>
-        <!-- END: NEW FULLSCREEN BUTTON -->
-        <!-- REMOVED: Toggle Console Button -->
+        <!-- REMOVED Toggle Console Button -->
       </div>
     </div>
     <!-- END: NEW OVERLAY AND SIDEBAR ELEMENTS -->
 
     <div class="app-container">
       <header>
-        <!-- START: MODIFIED HEADER -->
         <div class="header-content">
           <button id="menuToggleBtn" title="Open Settings">
             <i class="fas fa-bars"></i>
           </button>
         </div>
-        <!-- END: MODIFIED HEADER -->
       </header>
 
       <main>
-        <!-- START: SEARCH BAR -->
         <div class="search-bar">
           <i class="fas fa-search"></i>
           <input
@@ -116,7 +112,6 @@
             placeholder="Search for a track..."
           />
         </div>
-        <!-- END: SEARCH BAR -->
 
         <div id="audioLibrary" class="audio-library">
           <!-- Audio tracks will be dynamically inserted here -->
@@ -161,7 +156,6 @@
         </div>
       </div>
 
-      <!-- The main audio player element -->
       <audio id="audioPlayer" crossorigin="anonymous"></audio>
 
       <!-- Black Screen Focus Mode -->
