@@ -3,12 +3,11 @@
 import { dom } from './dom.js';
 import { state } from './state.js';
 import { themes } from './config.js';
-import { applyTheme, formatTime, applyZoomState } from './ui.js';
+import { applyTheme, formatTime } from './ui.js'; // Removed applyZoomState
 import { loadTrack, setVolume } from './player.js';
 
 export function saveState() {
-    // Save Zoom Preference
-    localStorage.setItem('softieAxinZoom', state.isZoomAllowed);
+    // Removed saving of zoom preference as it's now always prevented
 
     if (state.currentTrackIndex === -1) return;
     
@@ -37,17 +36,8 @@ export function loadState() {
         dom.backgroundPlayToggle.checked = state.backgroundPlayEnabled;
     }
 
-    // Load Zoom Preference
-    const savedZoom = localStorage.getItem('softieAxinZoom');
-    if (savedZoom !== null) {
-        state.isZoomAllowed = JSON.parse(savedZoom);
-    } else {
-        // MODIFIED: Default to false (disabled) if nothing is saved
-        state.isZoomAllowed = false; 
-    }
+    // Removed loading of zoom preference as it's now always prevented
     
-    applyZoomState(); 
-
     // Load Player State
     const savedState = localStorage.getItem('softieAxinState');
     if (savedState) {

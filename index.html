@@ -4,9 +4,9 @@
   <head>
     <meta charset="UTF-8" />
     
-    <!-- LEVEL 1: Strict Meta Tag by default -->
+    <!-- LEVEL 1: Strict Meta Tag by default - ALWAYS PREVENT ZOOM -->
+    <!-- Removed id="viewportMeta" as zoom control is now permanent -->
     <meta
-      id="viewportMeta"
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
@@ -82,18 +82,12 @@
           </div>
         </div>
         <!-- END: SHUFFLE DROPDOWN -->
-        <label class="toggle-switch" title="Enable or disable zooming">
-          <input type="checkbox" id="zoomToggle" />
-          <span class="slider"></span>
-          Allow Zooming
-        </label>
+        <!-- Removed Zoom Toggle -->
         <button id="reloadAppBtn" title="Reload the application">
           <i class="fas fa-sync-alt"></i> Reload App
         </button>
 
-        <button id="hardResetBtn" style="border-color: #ff4d4d; color: #ff4d4d;" title="Wipe data and fetch latest version">
-  <i class="fas fa-bomb"></i> Factory Reset & Update
-</button>
+        <!-- Removed Hard Reset Button -->
       </div>
     </div>
     <!-- END: NEW OVERLAY AND SIDEBAR ELEMENTS -->

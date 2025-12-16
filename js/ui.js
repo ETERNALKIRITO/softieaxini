@@ -5,34 +5,18 @@ import { state } from './state.js';
 import { themes } from './config.js'; 
 import { loadTrack, pauseAudio } from './player.js';
 
-// --- LEVEL 3: JavaScript Brute Force Functions ---
+// --- LEVEL 3: JavaScript Brute Force Functions for Permanent Zoom Prevention ---
+// These are now always active, no toggle.
 
-// 1. Block "Ctrl + Scroll" (Desktop Mouse Wheel)
-const blockWheel = (e) => {
-    if (e.ctrlKey) {
-        e.preventDefault();
-        // console.log("Blocked: Ctrl + Scroll");
-    }
-};
-
-// 2. Block Keyboard Zooming (Ctrl + "+", "-", "0")
-const blockKey = (e) => {
-    if ((e.ctrlKey || e.metaKey) && 
-        (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
-        e.preventDefault();
-        // console.log("Blocked: Keyboard Zoom");
-    }
-};
-
-// 3. Block "Pinch to Zoom" (iOS Safari / Mobile)
-const blockGesture = (e) => {
+// Block "Pinch to Zoom" (iOS Safari / Mobile)
+export const blockGesture = (e) => { // Exported for use in main.js
     e.preventDefault();
     // console.log("Blocked: Gesture/Pinch");
 };
 
-// 4. Block "Double-Tap to Zoom"
+// Block "Double-Tap to Zoom"
 let lastTouchEnd = 0;
-const blockDoubleTap = (e) => {
+export const blockDoubleTap = (e) => { // Exported for use in main.js
     const now = (new Date()).getTime();
     // If the time between two taps is less than 300ms, it's a double tap
     if (now - lastTouchEnd <= 300) {
@@ -42,40 +26,10 @@ const blockDoubleTap = (e) => {
     lastTouchEnd = now;
 };
 
-export function applyZoomState() {
-    dom.zoomToggle.checked = state.isZoomAllowed;
+// Removed applyZoomState as zoom is now always prevented
+// Removed blockWheel and blockKey as they are generally not needed for mobile Safari zoom prevention,
+// and keeping the viewport meta tag combined with gesture/double-tap blocking is usually sufficient.
 
-    if (state.isZoomAllowed) {
-        // --- ALLOW ZOOMING ---
-        
-        // 1. Meta Tag
-        dom.viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
-        
-        // 2. CSS
-        document.body.classList.remove('zoom-locked');
-        
-        // 3. Remove Brute Force Listeners
-        window.removeEventListener('wheel', blockWheel);
-        window.removeEventListener('keydown', blockKey);
-        document.removeEventListener('gesturestart', blockGesture);
-        document.removeEventListener('touchend', blockDoubleTap);
-
-    } else {
-        // --- BLOCK ZOOMING (Brute Force Mode) ---
-
-        // 1. Meta Tag
-        dom.viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-        
-        // 2. CSS
-        document.body.classList.add('zoom-locked');
-
-        // 3. Add Brute Force Listeners
-        window.addEventListener('wheel', blockWheel, { passive: false }); // passive: false is REQUIRED
-        window.addEventListener('keydown', blockKey);
-        document.addEventListener('gesturestart', blockGesture);
-        document.addEventListener('touchend', blockDoubleTap, false);
-    }
-}
 
 // Helper: Fisher-Yates Shuffle Algorithm
 export function shuffleArray(array) {
@@ -236,18 +190,11 @@ export function formatTime(seconds) {
 }
 
 export function applyTheme(themeName) {
-    // Keep zoom-locked class if it exists
-    const isZoomLocked = document.body.classList.contains('zoom-locked');
-    
+    // Removed zoom-locked class handling, as zoom is now always prevented
     document.body.className = '';
     
     if (themeName !== "default") {
         document.body.classList.add(themeName);
-    }
-    
-    // Re-apply zoom lock if necessary
-    if (isZoomLocked) {
-        document.body.classList.add('zoom-locked');
     }
     
     localStorage.setItem('softieAxinTheme', themeName);

@@ -16,16 +16,11 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    /* Removed zoom-locked CSS - zoom is now always prevented via meta tag and JS listeners */
+    touch-action: pan-x pan-y; /* Helps prevent bounce effects on some devices */
+    overflow: hidden; /* Locks height to prevent scroll expansion */
+    height: 100vh; /* Ensures consistent viewport height */
 }
-
-/* START: Brute Force CSS Logic */
-body.zoom-locked {
-    /* 'pan-x pan-y' allows scrolling but explicitly DISALLOWS pinch gestures */
-    touch-action: pan-x pan-y;
-    overflow: hidden; /* Helps prevent bounce effects on some devices */
-    height: 100vh; /* Locks height to prevent scroll expansion */
-}
-/* END: Brute Force CSS Logic */
 
 .app-container {
     background-color: var(--secondary-bg);

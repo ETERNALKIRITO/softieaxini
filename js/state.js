@@ -13,8 +13,7 @@ export const state = {
     gainNode: null,
     audioSource: null,
     isAudioContextInitialized: false,
-    // MODIFIED: Default Zoom State
-    isZoomAllowed: false, 
+    // Removed isZoomAllowed as zoom is now always prevented
 };
 
 export async function loadLibraryData() {

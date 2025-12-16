@@ -1,13 +1,15 @@
 // js/main.js
 import { dom } from './dom.js';
 import { state, loadLibraryData, initializeFlatAudioList } from './state.js'; 
-import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary, updateTrackCacheStatus, applyZoomState, shuffleArray } from './ui.js';
+import { renderLibrary, cycleTheme, showBlackScreenMode, hideBlackScreenMode, toggleLockScreen, formatTime, updatePlayPauseButtons, filterLibrary, updateTrackCacheStatus, shuffleArray, blockGesture, blockDoubleTap } from './ui.js'; // Added blockGesture, blockDoubleTap
 import { togglePlayPause, playNext, playPrev, restartAudio, seek, pauseAudio, setVolume, loadTrack } from './player.js'; 
 import { saveState, loadState } from './persistence.js';
-
+import { AUDIO_CACHE_NAME } from './config.js'; // Import AUDIO_CACHE_NAME
 
 document.addEventListener('DOMContentLoaded', async () => {
     
+    // Always apply permanent zoom prevention on load
+    applyPermanentZoomPrevention();
 
     await loadLibraryData();
 
@@ -21,9 +23,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     registerServiceWorker();
 });
 
+// NEW: Function to permanently prevent zoom
+function applyPermanentZoomPrevention() {
+    // Add brute force listeners directly here for consistent behavior
+    document.addEventListener('gesturestart', blockGesture);
+    document.addEventListener('touchend', blockDoubleTap, false);
+    // Removed desktop specific zoom prevention (wheel, keydown) as requested for simplicity
+}
+
 async function checkInitialCacheStatus() {
     if (!('caches' in window)) return;
-    const cache = await caches.open('softieaxin-audio-v1');
+    const cache = await caches.open(AUDIO_CACHE_NAME); // FIX: Use correct AUDIO_CACHE_NAME
     for (let i = 0; i < state.flatAudioList.length; i++) {
         const track = state.flatAudioList[i];
         const response = await cache.match(track.url);
@@ -44,23 +54,9 @@ function setupEventListeners() {
 
     dom.fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-    dom.zoomToggle.addEventListener('change', (e) => {
-        state.isZoomAllowed = e.target.checked;
-        applyZoomState();
-        saveState(); 
-    });
+    // Removed Zoom Toggle event listener as zoom is always prevented now
 
-    // Hard Reset
-    dom.hardResetBtn.addEventListener('click', async () => {
-        const confirmed = confirm("⚠️ FACTORY RESET ⚠️\n\nThis will delete all offline music, reset your settings, and force a download of the newest version.\n\nContinue?");
-        
-        if (confirmed) {
-            dom.hardResetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Wiping Data...';
-            dom.hardResetBtn.disabled = true;
-            await performHardReset();
-        }
-    });
-
+    // Removed Hard Reset button and its event listener
 
     dom.reloadAppBtn.addEventListener('click', () => {
         dom.reloadAppBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reloading...';
@@ -147,33 +143,7 @@ function setupEventListeners() {
     document.addEventListener('MSFullscreenChange', updateFullscreenButton);
 }
 
-// NEW FUNCTION: The Cleaning Logic
-async function performHardReset() {
-    // 1. Unregister Service Workers
-    if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (const registration of registrations) {
-            await registration.unregister();
-            console.log('Service Worker unregistered.');
-        }
-    }
-
-    // 2. Delete All Caches (App Shell + Audio)
-    if ('caches' in window) {
-        const keys = await caches.keys();
-        for (const key of keys) {
-            await caches.delete(key);
-            console.log(`Cache deleted: ${key}`);
-        }
-    }
-
-    // 3. Clear Local Storage (Settings, Volume, Track)
-    localStorage.clear();
-
-    // 4. Force Reload from Server (ignoring browser cache)
-    window.location.reload(true);
-}
-
+// Removed performHardReset function
 
 function toggleFullscreen() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -250,7 +220,7 @@ async function handleCacheAll() {
 
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
+        navigator.serviceWorker.register('sw.js', { type: 'module' }) // FIX: Added { type: 'module' }
             .then(reg => {
                 console.log('Service Worker registered.', reg);
                 navigator.serviceWorker.addEventListener('message', event => {

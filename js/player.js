@@ -2,7 +2,6 @@
 
 import { dom } from './dom.js';
 import { state } from './state.js';
-// FIX: Only import functions that actually exist in ui.js
 import { updatePlayPauseButtons, updatePlayingIndicator, showBlackScreenMode } from './ui.js';
 import { saveState } from './persistence.js';
 

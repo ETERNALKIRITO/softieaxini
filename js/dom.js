@@ -28,10 +28,11 @@ export const dom = {
     searchInput: document.getElementById('searchInput'),
 
     fullscreenBtn: document.getElementById('fullscreenBtn'),
-    zoomToggle: document.getElementById('zoomToggle'),
+    // Removed zoomToggle as zoom is now always prevented
     reloadAppBtn: document.getElementById('reloadAppBtn'),
-    hardResetBtn: document.getElementById('hardResetBtn'),
-    viewportMeta: document.getElementById('viewportMeta'),
+    // Removed hardResetBtn
+
+    // Removed viewportMeta as its id is no longer needed (content is static)
 
     // Shuffle Dropdown Elements
     shuffleDropdownBtn: document.getElementById('shuffleDropdownBtn'),
