@@ -126,6 +126,9 @@ function setupEventListeners() {
     dom.focusModeToggleBtn.addEventListener('click', () => {
         if (!state.isBlackScreenLocked) hideBlackScreenMode();
     });
+//  dom.nowPlayingBar.addEventListener('dblclick', (e) => {
+//  if (!e.target.closest('button, input[type="range"]')) showBlackScreenMode();
+//  });
     dom.blackScreenMode.addEventListener('click', handleBlackScreenClick);
     dom.blackScreenMode.addEventListener('touchend', handleBlackScreenClick);
     
