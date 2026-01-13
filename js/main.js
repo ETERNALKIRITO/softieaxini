@@ -126,10 +126,8 @@ function setupEventListeners() {
     dom.focusModeToggleBtn.addEventListener('click', () => {
         if (!state.isBlackScreenLocked) hideBlackScreenMode();
     });
-    dom.nowPlayingBar.addEventListener('dblclick', (e) => {
-        if (!e.target.closest('button, input[type="range"]')) showBlackScreenMode();
-    });
     dom.blackScreenMode.addEventListener('click', handleBlackScreenClick);
+    dom.blackScreenMode.addEventListener('touchend', handleBlackScreenClick);
     
     document.addEventListener('visibilitychange', () => {
         if (document.hidden && !state.backgroundPlayEnabled && state.isPlaying) {
@@ -190,10 +188,23 @@ function handleBackgroundToggle(e) {
 }
 
 function handleBlackScreenClick(e) {
+    // If clicking the inner controls (Play, Pause, Slider), ignore this background tap logic
     if (e.target.closest('.bs-content') || e.target.closest('.focus-mode-toggle')) return;
+
+    // FIX FOR MOBILE: 
+    // If this is a touch event, we must preventDefault() to stop the browser from 
+    // firing a subsequent 'click' event (which would cause double counting).
+    // We also stopPropagation() so the global zoom blocker in ui.js doesn't interfere.
+    if (e.type === 'touchend') {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
     if (state.isBlackScreenLocked) return;
+
     state.tapCount++;
     if (state.tapTimeout) clearTimeout(state.tapTimeout);
+    
     if (state.tapCount >= 4) {
         hideBlackScreenMode();
         state.tapCount = 0;
